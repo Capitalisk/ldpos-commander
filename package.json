@@ -26,6 +26,12 @@
     "mocha": "^8.2.1"
   },
   "dependencies": {
-    "ldpos-client": "^2.1.2"
+    "fs-extra": "^9.0.1",
+    "inquirer": "^7.3.3",
+    "ldpos-client": "^2.1.2",
+    "minimist": "^1.2.5"
+  },
+  "bin": {
+    "ldpos": "bin/cli.js"
   }
 }
