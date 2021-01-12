@@ -1,0 +1,31 @@
+{
+  "name": "ldpos-commander",
+  "version": "1.0.0",
+  "description": "CLI client for LDPoS blockchains.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec --timeout 40000 --slow 40000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leasehold/ldpos-commander.git"
+  },
+  "keywords": [
+    "ldpos",
+    "cli",
+    "client",
+    "blockchain"
+  ],
+  "author": "Jonathan Gros-Dubois",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Leasehold/ldpos-commander/issues"
+  },
+  "homepage": "https://github.com/Leasehold/ldpos-commander#readme",
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  },
+  "dependencies": {
+    "ldpos-client": "^2.1.2"
+  }
+}
