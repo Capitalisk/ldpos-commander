@@ -25,7 +25,9 @@ const getConfigAndConnect = async () => {
     port = (await promptInput('Port: (Default: 7001)')) || 7001;
     networkSymbol =
       (await promptInput('Network symbol: (Default: ldpos)')) || 'ldpos';
-    save = await promptInput(`Save in your home dir? (${configPath + configFile})`);
+    save = await promptInput(
+      `Save in your home dir? (${configPath + configFile})`
+    );
     passphrase = await promptInput('Passphrase:');
 
     config = {
@@ -48,21 +50,16 @@ const getConfigAndConnect = async () => {
   });
 };
 
+// prettier-ignore
 const log = () => {
   console.log('Usage: ldpos [options] [command]\n');
   console.log('Options:');
-  console.log(
-    '  -v            Get the version of the current LDPoS installation'
-  );
+  console.log('  -v            Get the version of the current LDPoS installation');
   console.log('  --help        Get info on how to use this command');
-  console.log(
-    '  --force       Force all necessary directory modifications without prompts'
-  );
+  console.log('  --force       Force all necessary directory modifications without prompts');
   console.log();
   console.log('Commands:');
-  console.log(
-    '  config            Sets up your config to connect to the blockchain'
-  );
+  console.log('  config            Sets up your config to connect to the blockchain');
   console.log('');
 };
 
@@ -80,7 +77,7 @@ const log = () => {
   } catch (e) {
     console.error(e);
     console.log(
-      'Please post an issue on the repo: https://github.com/Leasehold/ldpos-commander'
+      '\x1b[31mPlease post an issue on the repo: https://github.com/Leasehold/ldpos-commander'
     );
     process.exit();
   }
