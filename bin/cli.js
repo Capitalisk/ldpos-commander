@@ -63,7 +63,6 @@ const log = () => {
   console.log('Options:');
   console.log('  -v            Get the version of the current LDPoS installation');
   console.log('  --help        Get info on how to use this command');
-  console.log('  --force       Force all necessary directory modifications without prompts');
   console.log();
   console.log('Commands:');
   console.log('  remove            Removes config file with server ip, port and networkSymbol');
@@ -76,7 +75,8 @@ const log = () => {
     remove: async () => await fs.remove(fullConfigPath),
     balance: async (client) => await accountBalance(client),
     help: async () => log(),
-    v: async () => console.log(`Version: ${require('../package.json').version}`),
+    v: async () =>
+      console.log(`Version: ${require('../package.json').version}`),
     default: async () => log(),
   };
 
@@ -86,18 +86,22 @@ const log = () => {
       return;
     }
 
-    for (let i = 0; i < Object.keys(argv).length; i++) {
-      const arg = Object.keys(argv)[i];
-      if(sw.hasOwnProperty(arg)) {
-        sw[arg]()
-        return
+    if(!command) {
+      for (let i = 0; i < Object.keys(argv).length; i++) {
+        const arg = Object.keys(argv)[i];
+        if (sw.hasOwnProperty(arg)) {
+          sw[arg]();
+          return;
+        } else {
+          errorLog('Command is not found. Run ldpos --help to see all available commands.')
+        }
       }
     }
 
     let config;
 
     // If command is an ip execute it on another server
-    if (command.includes('.') && command.split('.').length === 4) {
+    if (command && command.includes('.') && command.split('.').length === 4) {
       const hostname = command.split(':')[0];
       const port = command.split(':')[1] || 7001;
       const networkSymbol = await networkSymbolPrompt();
@@ -112,7 +116,7 @@ const log = () => {
     // Get passphrase of the wallet
     const passphrase = await passphrasePrompt();
 
-    console.log(config, passphrase)
+    console.log(config, passphrase);
 
     const client = ldposClient.createClient(config);
 
