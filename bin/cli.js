@@ -11,17 +11,16 @@ const {
   fork,
   configPath,
   errorLog,
+  passphrasePrompt,
 } = require('../lib/index');
 
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
 
-const command = argv._[0];
+let command = argv._[0];
 
-let config, client;
-
-const getConfigAndConnect = async () => {
-  let hostname, port, networkSymbol, save, test, passphrase
+const getConfig = async () => {
+  let config;
 
   if (await fs.pathExists(fullConfigPath)) {
     // If config file exists use config data
@@ -29,15 +28,13 @@ const getConfigAndConnect = async () => {
   } else {
     // If not exists prompt questions
     // prettier-ignore
-    hostname = await promptInput('Server IP: (Default: 34.227.22.98)') || '34.227.22.98';
+    hostname = await promptInput('Server IP: (Default: 34.227.22.98)') || '34.227.22.99';
     // prettier-ignore
     port = await promptInput('Port: (Default: 7001)') || 7001;
     // prettier-ignore
     networkSymbol = await promptInput('Network symbol: (Default: ldpos)') || 'ldpos';
     // prettier-ignore
     save = ['Y', 'y'].includes(await promptInput(`Save in your home dir? (Y/n)`));
-    test = ['Y', 'y'].includes(await promptInput(`Get your account balance as a test? (Y/n)`));
-    passphrase = await promptInput('Passphrase:');
 
     config = {
       hostname,
@@ -46,51 +43,59 @@ const getConfigAndConnect = async () => {
     };
 
     if (save)
-      await fs.outputFile(
-        fullConfigPath,
-        JSON.stringify({ ...config, passphrase }, null, 2)
-      );
+      await fs.outputFile(fullConfigPath, JSON.stringify(config, null, 2));
   }
 
-  try {
-    client = ldposClient.createClient(config);
+  return Promise.resolve(config);
+};
 
-    // TODO: testing purposes
-    passphrase = 'clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle'
-
-    if(passphrase) {
-      await client.connect({
-        passphrase,
-      });
-    }
-
-    if(test) {
-      const accounts = await client.getAccountsByBalance(0, 100);
-      console.log('ACCOUNTS:', accounts);
-    }
-  } catch (e) {
-    console.log(e)
-    errorLog(e.message);
-  }
+const accountBalance = async (client) => {
+  // clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle
+  const accounts = await client.getAccountsByBalance(0, 100);
+  console.log('ACCOUNTS:', accounts);
 };
 
 // prettier-ignore
 const log = () => {
-  console.log('Usage: ldpos [options] [command]\n');
+  console.log('Usage: ldpos [OPTIONAL: ip:port] [options] [command]\n');
   console.log('Options:');
   console.log('  -v            Get the version of the current LDPoS installation');
   console.log('  --help        Get info on how to use this command');
   console.log('  --force       Force all necessary directory modifications without prompts');
   console.log();
   console.log('Commands:');
-  console.log('  config            Sets up your config to connect to the blockchain');
+  console.log('  remove            Removes config file with server ip, port and networkSymbol');
   console.log('');
 };
 
 (async () => {
   try {
+    // Get config if existent in home dir or create config object
+    const config = await getConfig();
+
+    // Get passphrase of the wallet
+    const passphrase = await passphrasePrompt();
+
+    let client;
+
+    // If command is an ip execute it on another server
+    if (command.split('.').length === 4) {
+      const hostname = command.split(':')[0];
+      const port = command.split(':')[0] || 7001;
+      command = argv._[1];
+
+      client = ldposClient.createClient({ ...config, hostname, port });
+    } else {
+      client = ldposClient.createClient(config);
+    }
+    await client.connect({
+      passphrase,
+    });
+
+    // Switch case for commands
     const sw = {
-      config: async () => await getConfigAndConnect(),
+      remove: async () => await fs.remove(fullConfigPath),
+      balance: async () => await accountBalance(client),
       '--help': async () => log(),
       '-v': async () => console.log(require('./package.json').version),
       default: async () => log(),
