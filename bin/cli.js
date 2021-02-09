@@ -34,6 +34,7 @@ const getConfigAndConnect = async () => {
     networkSymbol = await promptInput('Network symbol: (Default: ldpos)') || 'ldpos';
     // prettier-ignore
     save = ['Y', 'y'].includes(await promptInput(`Save in your home dir? (Y/n)`));
+    test = ['Y', 'y'].includes(await promptInput(`Get your account balance as a test? (Y/n)`));
     passphrase = await promptInput('Passphrase:');
 
     config = {
@@ -50,7 +51,7 @@ const getConfigAndConnect = async () => {
   }
 
   try {
-    client = await ldposClient.createClient(config);
+    client = ldposClient.createClient(config);
 
     // TODO: testing purposes
     passphrase = 'clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle'
@@ -59,6 +60,11 @@ const getConfigAndConnect = async () => {
       await client.connect({
         passphrase,
       });
+    }
+
+    if(test) {
+      const accounts = await client.getAccountsByBalance(0, 100);
+      console.log('ACCOUNTS:', accounts);
     }
   } catch (e) {
     console.log(e)
