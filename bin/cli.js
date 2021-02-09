@@ -15,12 +15,13 @@ const {
   networkSymbolPrompt,
 } = require('../lib/index');
 
-const { transfer } = require('../lib/commands');
+const { transfer, vote, unvote } = require('../lib/commands');
 
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
 
-let command = argv._[0];
+let command = argv._[1];
+let type = argv._[0];
 
 const getConfig = async () => {
   let config;
@@ -62,20 +63,41 @@ const log = () => {
   console.log('Usage: ldpos (OPTIONAL: ip:port) [options] [command]\n');
   console.log('<ip:port>: Default port is 7001. If not provided it will prompt you in the steps.')
   console.log('Options:');
-  console.log('  -v            Get the version of the current LDPoS installation');
-  console.log('  --help        Get info on how to use this command');
+  console.log('  -v                             Get the version of the current LDPoS installation');
+  console.log('  --help                         Get info on how to use this command');
   console.log();
   console.log('Commands:');
-  console.log('  remove            Removes config file with server ip, port and networkSymbol');
+  console.log('  config:                        Commands for config');
+  console.log('     clean                       Removes config file with server ip, port and networkSymbol');
+  // console.log('     add                      Removes config file with server ip, port and networkSymbol');
+  console.log('  transactions:                  Commands for transactions');
+  console.log('     transfer                    Transfer to a wallet');
+  console.log('     vote                        Vote a a delegate');
+  console.log('     unvote                      Unvote a a delegate');
+  console.log('     register-multi-wallet       Register a multisigwallet');
+  console.log('     register-sig-details        Register a registerSigDetails');
+  console.log('     register-multi-details      Register a registerMultisigDetails');
+  console.log('     register-forging-details    Register a registerForgingDetails');
+  console.log('  account:                       Commands for your account');
+  console.log('     balance                     Check your balance');
+  console.log('     public-keys                 Check your public keys');
   console.log('');
 };
 
 (async () => {
   // Switch case for commands
   const sw = {
-    remove: async () => await fs.remove(fullConfigPath),
-    balance: async (opts) => await accountBalance(opts),
-    transfer: async (opts) => await transfer(opts),
+    config: {
+      clean: async () => await fs.remove(fullConfigPath),
+    },
+    transaction: {
+      transfer: async (opts) => await transfer(opts),
+      vote: async (opts) => await vote(opts),
+      unvote: async (opts) => await unvote(opts),
+    },
+    account: {
+      balance: async (opts) => await accountBalance(opts),
+    },
     help: async () => log(),
     v: async () =>
       console.log(`Version: ${require('../package.json').version}`),
@@ -83,8 +105,8 @@ const log = () => {
   };
 
   try {
-    if (command === 'remove') {
-      await sw.remove();
+    if (type === 'config' && command === 'clean') {
+      await sw.config.clean();
       return;
     }
 
@@ -110,7 +132,8 @@ const log = () => {
       const hostname = command.split(':')[0];
       const port = command.split(':')[1] || 7001;
       const networkSymbol = await networkSymbolPrompt();
-      command = argv._[1];
+      command = argv._[2];
+      type = argv._[1];
 
       config = { networkSymbol, hostname, port };
     } else {
@@ -128,7 +151,13 @@ const log = () => {
     });
 
     // Execute given command
-    await (sw[command] || sw.default)({ client, passphrase });
+    if (sw[type]) {
+      await (sw[type][command] || sw.default)({ client, passphrase });
+    } else {
+      errorLog(
+        'Command is not found. Run ldpos --help to see all available commands.'
+      );
+    }
     process.exit();
   } catch (e) {
     debugger;
