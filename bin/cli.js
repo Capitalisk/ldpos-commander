@@ -141,17 +141,16 @@ const log = () => {
       config = await getConfig();
     }
 
-    // Get passphrase of the wallet
-    const passphrase = await passphrasePrompt();
-
-    const client = ldposClient.createClient(config);
-
-    await client.connect({
-      passphrase,
-    });
-
     // Execute given command
     if (sw[type]) {
+      // Get passphrase of the wallet
+      const passphrase = await passphrasePrompt();
+
+      const client = ldposClient.createClient(config);
+
+      await client.connect({
+        passphrase,
+      });
       await (sw[type][command] || sw.default)({ client, passphrase });
     } else {
       errorLog(
