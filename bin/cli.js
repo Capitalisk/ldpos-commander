@@ -75,8 +75,8 @@ const log = () => {
   const sw = {
     remove: async () => await fs.remove(fullConfigPath),
     balance: async (client) => await accountBalance(client),
-    '--help': async () => log(),
-    '-v': async () => console.log(require('./package.json').version),
+    help: async () => log(),
+    v: async () => console.log(`Version: ${require('../package.json').version}`),
     default: async () => log(),
   };
 
@@ -86,10 +86,18 @@ const log = () => {
       return;
     }
 
+    for (let i = 0; i < Object.keys(argv).length; i++) {
+      const arg = Object.keys(argv)[i];
+      if(sw.hasOwnProperty(arg)) {
+        sw[arg]()
+        return
+      }
+    }
+
     let config;
 
     // If command is an ip execute it on another server
-    if (command.split('.').length === 4) {
+    if (command.includes('.') && command.split('.').length === 4) {
       const hostname = command.split(':')[0];
       const port = command.split(':')[1] || 7001;
       const networkSymbol = await networkSymbolPrompt();
