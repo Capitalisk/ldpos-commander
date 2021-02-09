@@ -15,6 +15,8 @@ const {
   networkSymbolPrompt,
 } = require('../lib/index');
 
+const { transfer } = require('../lib/commands');
+
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
 
@@ -51,7 +53,6 @@ const getConfig = async () => {
 };
 
 const accountBalance = async (client) => {
-  // clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle
   const accounts = await client.getAccountsByBalance(0, 100);
   console.log('ACCOUNTS:', accounts);
 };
@@ -73,7 +74,8 @@ const log = () => {
   // Switch case for commands
   const sw = {
     remove: async () => await fs.remove(fullConfigPath),
-    balance: async (client) => await accountBalance(client),
+    balance: async (opts) => await accountBalance(opts),
+    transfer: async (opts) => await transfer(opts),
     help: async () => log(),
     v: async () =>
       console.log(`Version: ${require('../package.json').version}`),
@@ -86,7 +88,7 @@ const log = () => {
       return;
     }
 
-    if(!command) {
+    if (!command) {
       // 1 because first entry always is _
       for (let i = 1; i < Object.keys(argv).length; i++) {
         const arg = Object.keys(argv)[i];
@@ -94,7 +96,9 @@ const log = () => {
           sw[arg]();
           return;
         } else {
-          errorLog('Command is not found. Run ldpos --help to see all available commands.')
+          errorLog(
+            'Command is not found. Run ldpos --help to see all available commands.'
+          );
         }
       }
     }
@@ -117,15 +121,14 @@ const log = () => {
     // Get passphrase of the wallet
     const passphrase = await passphrasePrompt();
 
-    console.log(config, passphrase);
-
     const client = ldposClient.createClient(config);
 
     await client.connect({
       passphrase,
     });
 
-    await (sw[command] || sw.default)(client);
+    // Execute given command
+    await (sw[command] || sw.default)({ client, passphrase });
     process.exit();
   } catch (e) {
     debugger;
