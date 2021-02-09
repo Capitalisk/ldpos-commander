@@ -4,7 +4,14 @@ const fs = require('fs-extra');
 const argv = require('minimist')(process.argv.slice(2));
 const ldposClient = require('ldpos-client');
 
-const { promptInput, exec, spawn, fork, configPath, errorLog } = require('../lib/index');
+const {
+  promptInput,
+  exec,
+  spawn,
+  fork,
+  configPath,
+  errorLog,
+} = require('../lib/index');
 
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
@@ -14,20 +21,19 @@ const command = argv._[0];
 let config, client;
 
 const getConfigAndConnect = async () => {
-  if (fs.existsSync(fullConfigPath)) {
+  if (await fs.pathExists(fullConfigPath)) {
     // If config file exists use config data
     config = require(fullConfigPath);
   } else {
     // If not exists prompt questions
-    hostname =
-      (await promptInput('Server IP: (Default: 34.227.22.98)')) ||
-      '34.227.22.98';
-    port = (await promptInput('Port: (Default: 7001)')) || 7001;
-    networkSymbol =
-      (await promptInput('Network symbol: (Default: ldpos)')) || 'ldpos';
-    save = await promptInput(
-      `Save in your home dir? (${configPath + configFile})`
-    );
+    // prettier-ignore
+    hostname = await promptInput('Server IP: (Default: 34.227.22.98)') || '34.227.22.98';
+    // prettier-ignore
+    port = await promptInput('Port: (Default: 7001)') || 7001;
+    // prettier-ignore
+    networkSymbol = await promptInput('Network symbol: (Default: ldpos)') || 'ldpos';
+    // prettier-ignore
+    save = ['Y', 'y'].includes(await promptInput(`Save in your home dir? (Y/n)`));
     passphrase = await promptInput('Passphrase:');
 
     config = {
@@ -37,20 +43,26 @@ const getConfigAndConnect = async () => {
     };
 
     if (save)
-      fs.writeFileSync(
+      await fs.outputFile(
         fullConfigPath,
         JSON.stringify({ ...config, passphrase }, null, 2)
       );
   }
 
-  client = ldposClient.createClient(config);
-
   try {
-    await client.connect({
-      passphrase,
-    });
+    client = await ldposClient.createClient(config);
+
+    // TODO: testing purposes
+    passphrase = 'clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle'
+
+    if(passphrase) {
+      await client.connect({
+        passphrase,
+      });
+    }
   } catch (e) {
-    errorLog(e.message)
+    console.log(e)
+    errorLog(e.message);
   }
 };
 
@@ -79,6 +91,6 @@ const log = () => {
     await (sw[command] || sw.default)();
     process.exit();
   } catch (e) {
-    errorLog(e.message)
+    errorLog(e.message);
   }
 })();
