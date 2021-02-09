@@ -69,7 +69,21 @@ const log = () => {
 };
 
 (async () => {
+  // Switch case for commands
+  const sw = {
+    remove: async () => await fs.remove(fullConfigPath),
+    balance: async () => await accountBalance(client),
+    '--help': async () => log(),
+    '-v': async () => console.log(require('./package.json').version),
+    default: async () => log(),
+  };
+
   try {
+    if (command === 'remove') {
+      await sw.remove()
+      return
+    }
+
     // Get config if existent in home dir or create config object
     const config = await getConfig();
 
@@ -92,14 +106,6 @@ const log = () => {
       passphrase,
     });
 
-    // Switch case for commands
-    const sw = {
-      remove: async () => await fs.remove(fullConfigPath),
-      balance: async () => await accountBalance(client),
-      '--help': async () => log(),
-      '-v': async () => console.log(require('./package.json').version),
-      default: async () => log(),
-    };
 
     await (sw[command] || sw.default)();
     process.exit();
