@@ -2,20 +2,10 @@
 
 const fs = require('fs-extra');
 const argv = require('minimist')(process.argv.slice(2));
-const childProcess = require('child_process');
 const ldposClient = require('ldpos-client');
-const inquirer = require('inquirer');
-const prompt = inquirer.createPromptModule();
-const util = require('util');
-const exec = util.promisify(childProcess.exec);
-const spawn = util.promisify(childProcess.spawn);
-const fork = util.promisify(childProcess.fork);
 
-const configPath =
-  `${process.env.APPDATA}\\` ||
-  (process.platform == 'darwin'
-    ? process.env.HOME + '/Library/Preferences/'
-    : process.env.HOME + '/.local/share/');
+const { promptInput, exec, spawn, fork, configPath } = require('../lib/index');
+
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
 
@@ -25,14 +15,18 @@ let config, client;
 
 const getConfigAndConnect = async () => {
   if (fs.existsSync(fullConfigPath)) {
+    // If config file exists use config data
     config = require(fullConfigPath);
   } else {
     // If not exists prompt questions
-    hostname = await prompt('Server IP:');
-    port = await prompt('Port:');
-    networkSymbol = await prompt('Network symbol:');
-    save = await prompt('Save in your home dir? (${configPath + config})');
-    passphrase = await prompt('Passphrase:');
+    hostname =
+      (await promptInput('Server IP: (Default: 34.227.22.98)')) ||
+      '34.227.22.98';
+    port = (await promptInput('Port: (Default: 7001)')) || 7001;
+    networkSymbol =
+      (await promptInput('Network symbol: (Default: ldpos)')) || 'ldpos';
+    save = await promptInput(`Save in your home dir? (${configPath + configFile})`);
+    passphrase = await promptInput('Passphrase:');
 
     config = {
       hostname,
@@ -57,22 +51,37 @@ const getConfigAndConnect = async () => {
 const log = () => {
   console.log('Usage: ldpos [options] [command]\n');
   console.log('Options:');
-  console.log("  -v            Get the version of the current LDPoS installation");
+  console.log(
+    '  -v            Get the version of the current LDPoS installation'
+  );
   console.log('  --help        Get info on how to use this command');
-  console.log('  --force       Force all necessary directory modifications without prompts');
+  console.log(
+    '  --force       Force all necessary directory modifications without prompts'
+  );
   console.log();
   console.log('Commands:');
-  console.log('  config            Sets up your config to connect to the blockchain');
+  console.log(
+    '  config            Sets up your config to connect to the blockchain'
+  );
   console.log('');
-}
+};
 
 (async () => {
-  const sw = {
-    config: async () => await getConfigAndConnect(),
-    '--help': async () => log(),
-    '-v': async () => console.log(require('./package.json').version),
-    default: async () => log(),
+  try {
+    const sw = {
+      config: async () => await getConfigAndConnect(),
+      '--help': async () => log(),
+      '-v': async () => console.log(require('./package.json').version),
+      default: async () => log(),
+    };
+
+    await (sw[command] || sw.default)();
+    process.exit();
+  } catch (e) {
+    console.error(e);
+    console.log(
+      'Please post an issue on the repo: https://github.com/Leasehold/ldpos-commander'
+    );
+    process.exit();
   }
-  
-  await (sw[command] || sw.default)();
 })();
