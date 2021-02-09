@@ -21,6 +21,8 @@ const command = argv._[0];
 let config, client;
 
 const getConfigAndConnect = async () => {
+  let hostname, port, networkSymbol, save, test, passphrase
+
   if (await fs.pathExists(fullConfigPath)) {
     // If config file exists use config data
     config = require(fullConfigPath);
