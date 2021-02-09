@@ -59,7 +59,7 @@ const accountBalance = async (client) => {
 // prettier-ignore
 const log = () => {
   console.log('Usage: ldpos (OPTIONAL: ip:port) [options] [command]\n');
-  console.log('<ip:port>: Default port is 7001. If not provided command line will prompt you the steps.')
+  console.log('<ip:port>: Default port is 7001. If not provided it will prompt you in the steps.')
   console.log('Options:');
   console.log('  -v            Get the version of the current LDPoS installation');
   console.log('  --help        Get info on how to use this command');
