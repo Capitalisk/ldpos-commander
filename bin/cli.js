@@ -87,7 +87,8 @@ const log = () => {
     }
 
     if(!command) {
-      for (let i = 0; i < Object.keys(argv).length; i++) {
+      // 1 because first entry always is _
+      for (let i = 1; i < Object.keys(argv).length; i++) {
         const arg = Object.keys(argv)[i];
         if (sw.hasOwnProperty(arg)) {
           sw[arg]();
