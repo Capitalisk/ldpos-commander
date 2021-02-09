@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const argv = require('minimist')(process.argv.slice(2));
 const ldposClient = require('ldpos-client');
 
-const { promptInput, exec, spawn, fork, configPath } = require('../lib/index');
+const { promptInput, exec, spawn, fork, configPath, errorLog } = require('../lib/index');
 
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
@@ -45,9 +45,13 @@ const getConfigAndConnect = async () => {
 
   client = ldposClient.createClient(config);
 
-  await client.connect({
-    passphrase,
-  });
+  try {
+    await client.connect({
+      passphrase,
+    });
+  } catch (e) {
+    errorLog(e.message)
+  }
 };
 
 // prettier-ignore
@@ -75,10 +79,6 @@ const log = () => {
     await (sw[command] || sw.default)();
     process.exit();
   } catch (e) {
-    console.error(e);
-    console.log(
-      '\x1b[31mPlease post an issue on the repo: https://github.com/Leasehold/ldpos-commander'
-    );
-    process.exit();
+    errorLog(e.message)
   }
 })();
