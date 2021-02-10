@@ -11,11 +11,13 @@ const {
   fork,
   configPath,
   errorLog,
+  successLog,
   passphrasePrompt,
   networkSymbolPrompt,
+  invalidCmd,
 } = require('../lib/index');
 
-const { transfer, vote, unvote } = require('../lib/commands');
+const { transfer, vote, unvote, balance, transactions } = require('../lib/commands');
 
 const configFile = 'ldpos-config.json';
 const fullConfigPath = `${configPath}${configFile}`;
@@ -51,11 +53,6 @@ const getConfig = async () => {
   }
 
   return Promise.resolve(config);
-};
-
-const accountBalance = async (client) => {
-  const accounts = await client.getAccountsByBalance(0, 100);
-  console.log('ACCOUNTS:', accounts);
 };
 
 // prettier-ignore
@@ -96,11 +93,11 @@ const log = () => {
       unvote: async (opts) => await unvote(opts),
     },
     account: {
-      balance: async (opts) => await accountBalance(opts),
+      balance: async (opts) => await balance(opts),
+      transactions: async (opts) => await transactions(opts)
     },
     help: async () => log(),
-    v: async () =>
-      console.log(`Version: ${require('../package.json').version}`),
+    v: async () => successLog(`Version: ${require('../package.json').version}`),
     default: async () => log(),
   };
 
@@ -110,6 +107,7 @@ const log = () => {
       return;
     }
 
+    // check args eg. -v and --help, execute if exists in sw
     if (!command) {
       // 1 because first entry always is _
       for (let i = 1; i < Object.keys(argv).length; i++) {
@@ -118,9 +116,7 @@ const log = () => {
           sw[arg]();
           return;
         } else {
-          errorLog(
-            'Command is not found. Run ldpos --help to see all available commands.'
-          );
+          invalidCmd();
         }
       }
     }
@@ -143,19 +139,21 @@ const log = () => {
 
     // Execute given command
     if (sw[type]) {
-      // Get passphrase of the wallet
-      const passphrase = await passphrasePrompt();
+      if (sw[type].hasOwnProperty(command)) {
+        // Get passphrase of the wallet
+        const passphrase = await passphrasePrompt();
 
-      const client = ldposClient.createClient(config);
+        const client = ldposClient.createClient(config);
 
-      await client.connect({
-        passphrase,
-      });
-      await (sw[type][command] || sw.default)({ client, passphrase });
+        await client.connect({
+          passphrase,
+        });
+        await (sw[type][command] || sw.default)({ client, passphrase });
+      } else {
+        invalidCmd();
+      }
     } else {
-      errorLog(
-        'Command is not found. Run ldpos --help to see all available commands.'
-      );
+      invalidCmd();
     }
     process.exit();
   } catch (e) {
