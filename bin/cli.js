@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const argv = require('minimist')(process.argv.slice(2));
-const { createInterface, CmdInterface } = require('../lib');
+const { CmdInterface } = require('../lib');
 
 const config = {};
 
