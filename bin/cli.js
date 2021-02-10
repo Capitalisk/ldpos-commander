@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const argv = require('minimist')(process.argv.slice(2));
-const { createInterface } = require('../lib');
+const { createInterface, CmdInterface } = require('../lib');
 
 const config = {};
 
@@ -12,11 +12,14 @@ for (let i = 1; i < Object.keys(argv).length; i++) {
 }
 
 (async () => {
-  const cmd = await createInterface(config);
+  const cmd = await new CmdInterface().init(config);
 
   console.log(cmd.config);
 
-  if (argv._.length) {
+  console.log('Going to run command:', argv._.length || Object.keys(argv).length < 1)
+  console.log('Going to run interactive:', !(argv._.length || Object.keys(argv).length < 1))
+
+  if (argv._.length || Object.keys(argv).length > 1) {
     cmd.command(argv);
   } else {
     cmd.interactive();
