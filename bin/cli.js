@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const argv = require('minimist')(process.argv.slice(2));
-const { CmdInterface } = require('../lib');
+const { createInterface } = require('../lib');
 
 const config = {}
 
@@ -11,7 +11,9 @@ for (let i = 1; i < Object.keys(argv).length; i++) {
   config[arg.replace(/-./g, x=>x.toUpperCase()[1])] = argv[arg]
 }
 
-const interface = new CmdInterface(config);
+const interface = createInterface(config);
+
+console.log(interface.config);
 
 (async () => {
   if (argv.hostname) {
