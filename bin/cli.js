@@ -12,12 +12,7 @@ for (let i = 1; i < Object.keys(argv).length; i++) {
 }
 
 (async () => {
-  const cmd = await new CmdInterface().init(config);
-
-  console.log(cmd.config);
-
-  console.log('Going to run command:', argv._.length || Object.keys(argv).length < 1)
-  console.log('Going to run interactive:', !(argv._.length || Object.keys(argv).length < 1))
+  const cmd = await new CmdInterface().init(config, argv._.includes('clean'));
 
   if (argv._.length || Object.keys(argv).length > 1) {
     cmd.command(argv);
