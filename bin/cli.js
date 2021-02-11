@@ -19,7 +19,7 @@ for (let i = 1; i < Object.keys(argv).length; i++) {
 
   const cmd = await new CmdInterface(config, argv);
 
-  if (config.interactive && !args.length) {
+  if (config.interactive) {
     cmd.interactive();
   } else {
     cmd.command(argv);
