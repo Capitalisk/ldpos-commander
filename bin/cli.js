@@ -12,11 +12,14 @@ for (let i = 1; i < Object.keys(argv).length; i++) {
 }
 
 (async () => {
-  config.interactive = !argv._.length || Object.keys(argv).length > 1;
+  config.interactive =
+    (!argv._.length || Object.keys(argv).length > 1) &&
+    // Case its --help, --version or -v
+    !Object.keys(argv).slice(1).length;
 
   const cmd = await new CmdInterface(config, argv._.includes('clean'), argv);
 
-  if (config.interactive) {
+  if (config.interactive && !args.length) {
     cmd.interactive();
   } else {
     cmd.command(argv);
