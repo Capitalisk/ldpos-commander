@@ -28,46 +28,47 @@ Options:'
 Commands:
 
   indexes:
-     sync:
-         all                                     Syncs all key indexes
-         forging                                 Syncs forging key indexes
-         multisig                                Syncs multisig key indexes
-         sig                                     Syncs sig key indexes
-     verify:
-         forging                                 Verifies forging key indexes
-         multisig                                Verifies multisig key indexes
-         sig                                     Verifies sig key indexes
-     load:
-         forging                                 Loads forging key indexes
-         multisig                                Loads multisig key indexes
-         sig                                     Loads sig key indexes
-     save:
-         forging                                 Saves forging key indexes
-         multisig                                Saves multisig key indexes
-         sig                                     Saves sig key indexes
-  wallet:                                        Commands for wallets
-     generate                                    Generates a wallet
-     get                                         Get wallet
-  config:                                        Commands for config
-     network-symbol                              Gets current networkSymbol
-     clean                                       Removes config file with server ip, port
+      sync:
+          all                                     Syncs all key indexes
+          forging                                 Syncs forging key indexes
+          multisig                                Syncs multisig key indexes
+          sig                                     Syncs sig key indexes
+      verify:
+          forging                                 Verifies forging key indexes
+          multisig                                Verifies multisig key indexes
+          sig                                     Verifies sig key indexes
+      load:
+          forging                                 Loads forging key indexes
+          multisig                                Loads multisig key indexes
+          sig                                     Loads sig key indexes
+      save:
+          forging                                 Saves forging key indexes
+          multisig                                Saves multisig key indexes
+          sig                                     Saves sig key indexes
+  wallet:                                         Commands for wallets
+      generate                                    Generates a wallet
+      get                                         Get wallet
+      wallet get-multisig-waller-members          Get wallet members
+  config:                                         Commands for config
+      network-symbol                              Gets current networkSymbol
+      clean                                       Removes config file with server ip, port
                                                     and networkSymbol
-  transactions:                                  Commands for transactions
-     transfer                                    Transfer to a wallet
-     vote                                        Vote a a delegate
-     unvote                                      Unvote a a delegate
-     register-multisig-wallet                    Register a multisigwallet
-     register-multisig-details                   Register a registerMultisigDetails
-     register-sig-details                        Register a registerSigDetails
-     register-forging-details                    Register a registerForgingDetails
-  account:                                       Commands for your account
-     balance                                     Check your balance
-     public-keys                                 Check your public keys
-     balance                                     Check your balance
-     public-keys                                 Check your public keys
-     transactions                                Check your accounts transactions
-     votes                                       Check your accounts votes
-     block                                       Check your block
-     list                                        List your accounts
-     pending-transactions                        List pending transactions
+  transactions:                                   Commands for transactions
+      transfer                                    Transfer to a wallet
+      vote                                        Vote a a delegate
+      unvote                                      Unvote a a delegate
+      register-multisig-wallet                    Register a multisigwallet
+      register-multisig-details                   Register a registerMultisigDetails
+      register-sig-details                        Register a registerSigDetails
+      register-forging-details                    Register a registerForgingDetails
+  account:                                        Commands for your account
+      balance                                     Check your balance
+      public-keys                                 Check your public keys
+      balance                                     Check your balance
+      public-keys                                 Check your public keys
+      transactions                                Check your accounts transactions
+      votes                                       Check your accounts votes
+      block                                       Check your block
+      list                                        List your accounts
+      pending-transactions                        List pending transactions
 ```
