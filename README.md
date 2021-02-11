@@ -11,8 +11,14 @@ npm link
 ## Commands
 ```
 Usage: ldpos                                     To use the command line interactively
-Usage: ldpos (OPTIONAL: ip:port) [options] [command]\n
+
+OR
+
+Usage: ldpos (OPTIONAL: ip:port) [options] [command]
 <ip:port>: Default port is 7001. If not provided it will prompt you in the steps.
+eg.: ldpos 192.168.0.1 wallet get
+eg.: ldpos 192.168.0.1:7003 wallet get
+
 Options:'
   -v                                             Get the version of the current LDPoS installation
   --help                                         Get info on how to use this command
