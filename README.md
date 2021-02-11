@@ -45,13 +45,12 @@ Commands:
          forging                                 Saves forging key indexes
          multisig                                Saves multisig key indexes
          sig                                     Saves sig key indexes
-  wallet:
+  wallet:                                        Commands for wallets
      generate                                    Generates a wallet
      get                                         Get wallet
-
   config:                                        Commands for config
      network-symbol                              Gets current networkSymbol
-     clean                                       Removes config file with server ip, port 
+     clean                                       Removes config file with server ip, port
                                                     and networkSymbol
   transactions:                                  Commands for transactions
      transfer                                    Transfer to a wallet
