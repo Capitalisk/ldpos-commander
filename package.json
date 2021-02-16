@@ -26,6 +26,7 @@
     "mocha": "^8.2.1"
   },
   "dependencies": {
+    "@maartennnn/cli-builder": "~/Documents/code/projects/cli-builder",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
     "ldpos-client": "^5.0.1",
