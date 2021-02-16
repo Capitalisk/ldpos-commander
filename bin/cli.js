@@ -39,7 +39,7 @@ const cli = new CliInterface({
 
   if (
     !cli.options.exceptions
-      .map((f) => cli.argv.hasOwnProperty(f))
+      .map((f) => cli.argv.hasOwnProperty(f) || cli.argv._.includes(f))
       .includes(true)
   ) {
     if (!cli.options.hostname) {
@@ -99,174 +99,181 @@ const cli = new CliInterface({
 
   // prettier-ignore
   const commands = {
-    login: () => console.log('login'),
-    exit: () => cli.exit(),
+    // login: () => console.log('login'),
+    exit: {
+      execute: () => cli.exit(),
+      help: 'Exits the process'
+    },
     v: async () => successLog(`Version: ${require('../package.json').version}`),
     version: async () => successLog(`Version: ${require('../package.json').version}`),
     indexes: {
       sync: {
         all: {
           execute: async () => ldposAction('syncAllKeyIndexes', 'sync all update results:'),
-          help: 'test'
+          help: 'Syncs all key indexes'
         },
         forging: {
           execute: async () => ldposAction('syncKeyIndex', 'sync forging update results:', 'forging'),
-          help: 'test'
+          help: 'Syncs forging key indexes'
         },
         multisig: {
           execute: async () => ldposAction('syncKeyIndex', 'sync multisig update results:', 'multisig'),
-          help: 'test'
+          help: 'Syncs multisig key indexes'
         },
         sig: {
           execute: async () => ldposAction('syncKeyIndex', 'sync sig update results:', 'sig'),
-          help: 'test'
+          help: 'Syncs sig key indexes'
         },
       },
       verify: {
         forging: {
           execute: async () => ldposAction('verifyKeyIndex', 'verify forging results:', 'forging'),
-          help: 'test'
+          help: 'Verifies forging key indexes'
         },
         multisig: {
           execute: async () => ldposAction('verifyKeyIndex', 'verify multisig results:', 'multisig'),
-          help: 'test'
+          help: 'Verifies multisig key indexes'
         },
         sig: {
           execute: async () => ldposAction('verifyKeyIndex', 'verify sig results:', 'sig'),
-          help: 'test'
+          help: 'Verifies sig key indexes'
         },
       },
       load: {
         forging: {
           execute: async () => ldposAction('loadKeyIndex', 'verify forging results:', 'forging'),
-          help: 'test'
+          help: 'Loads forging key indexes'
         },
         multisig: {
           execute: async () => ldposAction('loadKeyIndex', 'verify multisig results:', 'multisig'),
-          help: 'test'
+          help: 'Loads multisig key indexes'
         },
         sig: {
           execute: async () => ldposAction('loadKeyIndex', 'verify sig results:', 'sig'),
-          help: 'test'
+          help: 'Loads sig key indexes'
         },
       },
       save: {
         forging: {
           execute: async () => ldposAction('loadKeyIndex', 'verify forging results:', 'forging'),
-          help: 'test'
+          help: 'Saves forging key indexes'
         },
         multisig: {
           execute: async () => ldposAction('loadKeyIndex', 'verify multisig results:', 'multisig'),
-          help: 'test'
+          help: 'Saves multisig key indexes'
         },
         sig: {
           execute: async () => ldposAction('loadKeyIndex', 'verify sig results:', 'sig'),
-          help: 'test'
+          help: 'Saves sig key indexes'
         },
       },
     },
     wallet: {
       balance: {
         execute: async () => await cli.actions.getBalance(),
-        help: 'test'
+        help: 'Get balance of prompted wallet'
       },
       address: {
         execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
-        help: 'test'
+        help: 'Get address of signed in wallet'
       },
       generate: {
         execute: async () => ldposAction('generateWallet', 'generated wallet:'),
-        help: 'test'
+        help: 'Generates a new wallet'
       },
       get: {
         execute: async () => await cli.actions.getWallet(),
-        help: 'test'
+        help: 'Get wallet'
       },
       getMultisigWalletMembers: {
         execute: async () => await cli.actions.getMultisigWalletMembers(),
-        help: 'test'
+        help: 'Get wallet members'
       },
       publicKey: {
         execute: async () => ldposAction('sigPublicKey', 'public key:'),
-        help: 'test'
+        help: 'Get sig wallet public key'
       },
       multisigPublicKey: {
         execute: async () => ldposAction('multisigPublicKey', 'public key:'),
-        help: 'test'
+        help: 'Get multisig wallet public key'
       },
     },
     config: {
       clean: {
         execute: async () => await fs.remove(cli.fullConfigPath),
-        help: 'test'
+        help: 'Removes config file with server ip, port and networkSymbol'
       },
       networkSymbol: {
-        execute: async () => ldposAction('getNetworkSymbol', 'sync all update results:'),
-        help: 'test'
+        execute: async () => ldposAction('getNetworkSymbol', 'Network symbol:'),
+        help: 'Gets current networkSymbol'
       },
     },
     transaction: {
       transfer: {
         execute: async () => await cli.actions.transfer(),
-        help: 'test'
+        help: 'Transfer to a wallet'
       },
       vote: {
         execute: async () => await cli.actions.vote(),
-        help: 'test'
+        help: 'Vote a delegate'
       },
       unvote: {
         execute: async () => await cli.actions.unvote(),
-        help: 'test'
+        help: 'Unvote a delegate'
       },
-      multisignTransfer: {
+      multisigTransfer: {
         execute: async () => await cli.actions.multisignTransfer(),
-        help: 'test'
+        help: 'Transfers to a multisig wallet'
       },
       verify: {
         execute: async () => await cli.actions.verifyTransaction(),
-        help: 'test'
+        help: 'Verifies a transaction'
       },
       registerMultisigWallet: {
         execute: async () => await cli.actions.registerMultisigWallet(),
-        help: 'test'
+        help: 'Register a multisigwallet'
       },
       registerMultisigDetails: {
         execute: async () => await cli.actions.registerMultisigDetails(),
-        help: 'test'
+        help: 'Register a registerMultisigDetails'
       },
       registerSigDetails: {
         execute: async () => await cli.actions.registerSigDetails(),
-        help: 'test'
+        help: 'Register a registerSigDetails'
       },
       registerForgingDetails: {
         execute: async () => await cli.actions.registerForgingDetails(),
-        help: 'test'
+        help: 'Register a registerForgingDetails'
       },
     },
     account: {
       balance: {
         execute: async () => await cli.actions.balance(),
-        help: 'test'
+        help: 'Check your balance'
+      },
+      publicKey: {
+        execute: () => console.log('needs implementation'),
+        help: 'Check your accounts public key'
       },
       transactions: {
         execute: async () => await cli.actions.transactions(),
-        help: 'test'
+        help: 'Check your accounts transactions'
       },
       votes: {
         execute: async () => await cli.actions.votes(),
-        help: 'test'
+        help: 'Check your accounts votes'
       },
       block: {
         execute: async () => await cli.actions.block(),
-        help: 'test'
+        help: 'Check your block'
       },
       list: {
         execute: async () => await cli.actions.list(),
-        help: 'test'
+        help: 'List your accounts'
       },
       pendingTransactions: {
         execute: async () => await cli.actions.pendingTransactions(),
-        help: 'test'
+        help: 'List pending transactions'
       },
     }
   }
