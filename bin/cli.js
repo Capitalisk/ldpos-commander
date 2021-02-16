@@ -36,7 +36,7 @@ const cli = new CliInterface({
       .map((f) => cli.argv.hasOwnProperty(f) || cli.argv._.includes(f))
       .includes(true)
   ) {
-    if (!cli.options.hostname) {
+    if (!config.hostname) {
       if (await fs.pathExists(FULL_CONFIG_PATH)) {
         config = require(FULL_CONFIG_PATH);
       } else {
