@@ -16,12 +16,6 @@ const cli = new CliInterface({
 
 (async () => {
   // TODO: Implement ip:port
-  // TODO: Clean to exceptions
-  // TODO: If no hostname or port prompt them
-  // TODO: If network symbol not define prompt it
-  // TODO: Save config file
-  // TODO: Prompt pass phrase
-  // TODO: LDPoS client connect
   let config = {};
   let client;
 
