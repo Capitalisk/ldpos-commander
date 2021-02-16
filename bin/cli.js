@@ -28,6 +28,9 @@ const cli = new CliInterface({
     const hostname = cli.argv._[0].split(':')[0];
     const port = cli.argv._[0].split(':')[1] || 7001;
 
+    // Take out the IP if provided
+    cli.argv._ = cli.argv._.slice(1)
+
     config = { hostname, port };
   }
 
