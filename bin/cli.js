@@ -15,7 +15,6 @@ const cli = new CliInterface({
 });
 
 (async () => {
-  // TODO: Implement ip:port
   let config = {};
   let client;
 
@@ -101,8 +100,8 @@ const cli = new CliInterface({
       execute: () => cli.exit(),
       help: 'Exits the process'
     },
-    v: async () => successLog(`Version: ${require('../package.json').version}`),
-    version: async () => successLog(`Version: ${require('../package.json').version}`),
+    v: async () => cli.successLog(`Version: ${require('../package.json').version}`),
+    version: async () => cli.successLog(`Version: ${require('../package.json').version}`),
     indexes: {
       sync: {
         all: {
