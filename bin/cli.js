@@ -242,29 +242,31 @@ const cli = new CliInterface({
         help: 'Register a registerForgingDetails'
       },
     },
-    account: {
-      balance: {
-        execute: async () => await cli.actions.balance(),
-        help: 'Check your balance'
+    accounts: {
+      mine: {
+        balance: {
+          execute: async () => await cli.actions.balance(),
+          help: 'Check your balance'
+        },
+        publicKey: {
+          execute: () => console.log('needs implementation'),
+          help: 'Check your accounts public key'
+        },
+        transactions: {
+          execute: async () => await cli.actions.transactions(),
+          help: 'Check your accounts transactions'
+        },
+        votes: {
+          execute: async () => await cli.actions.votes(),
+          help: 'Check your accounts votes'
+        },
+        block: {
+          execute: async () => await cli.actions.block(),
+          help: 'Check your block'
+        },
       },
-      publicKey: {
-        execute: () => console.log('needs implementation'),
-        help: 'Check your accounts public key'
-      },
-      transactions: {
-        execute: async () => await cli.actions.transactions(),
-        help: 'Check your accounts transactions'
-      },
-      votes: {
-        execute: async () => await cli.actions.votes(),
-        help: 'Check your accounts votes'
-      },
-      block: {
-        execute: async () => await cli.actions.block(),
-        help: 'Check your block'
-      },
-      list: {
-        execute: async () => await cli.actions.list(),
+      listByBalance: {
+        execute: async () => await cli.actions.listAccountsByBalance(),
         help: 'List your accounts'
       },
       pendingTransactions: {
@@ -281,7 +283,7 @@ const cli = new CliInterface({
         execute: async () => await cli.actions.getDelegatesByVoteWeight(),
         help: 'Delegates by weight in votes'
       }
-    }
+    },
   }
 
   cli.run(commands);
