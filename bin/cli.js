@@ -28,7 +28,7 @@ const cli = new CliInterface({
     const port = cli.argv._[0].split(':')[1] || 7001;
 
     // Take out the IP if provided
-    cli.argv._ = cli.argv._.slice(1)
+    cli.argv._ = cli.argv._.slice(1);
 
     config = { hostname, port };
   }
@@ -271,6 +271,16 @@ const cli = new CliInterface({
         execute: async () => await cli.actions.pendingTransactions(),
         help: 'List pending transactions'
       },
+    },
+    delegates: {
+      getForgingDelegates: {
+        execute: async () => await cli.actions.getForgingDelegates(),
+        help: 'Get list of forging deletes'
+      },
+      getByWeight: {
+        execute: async () => await cli.actions.getDelegatesByVoteWeight(),
+        help: 'Delegates by weight in votes'
+      }
     }
   }
 
