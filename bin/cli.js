@@ -91,10 +91,10 @@ const cli = new REPLClient({
     }
   }
 
-  const ldposAction = async (clientKey, message, action = null) => {
+  const ldposAction = async (clientKey, message, arg = null) => {
     cli.successLog(
       typeof client[clientKey] === 'function'
-        ? await client[clientKey](action)
+        ? await client[clientKey](arg)
         : client[clientKey],
       message
     );
