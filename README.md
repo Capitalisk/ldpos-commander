@@ -38,27 +38,27 @@ wallet balance                                          Get balance of prompted 
 wallet address                                          Get address of signed in wallet
 wallet generate                                         Generates a new wallet
 wallet get                                              Get wallet
-wallet getMultisigWalletMembers                         Get wallet members
-wallet publicKey                                        Get sig wallet public key
-wallet multisigPublicKey                                Get multisig wallet public key
+wallet get-multisig-wallet-members                      Get wallet members
+wallet public-key                                       Get sig wallet public key
+wallet multisig-public-key                              Get multisig wallet public key
 config clean                                            Removes config file with server ip, port and networkSymbol
-config networkSymbol                                    Gets current networkSymbol
+config network-symbol                                   Gets current networkSymbol
 transaction transfer                                    Transfer to a wallet
 transaction vote                                        Vote a delegate
 transaction unvote                                      Unvote a delegate
-transaction multisigTransfer                            Transfers to a multisig wallet
+transaction multisig-transfer                           Transfers to a multisig wallet
 transaction verify                                      Verifies a transaction
-transaction registerMultisigWallet                      Register a multisigwallet
-transaction registerMultisigDetails                     Register a registerMultisigDetails
-transaction registerSigDetails                          Register a registerSigDetails
-transaction registerForgingDetails                      Register a registerForgingDetails
+transaction register-multisig-wallet                    Register a multisigwallet
+transaction register-multisig-details                   Register a registerMultisigDetails
+transaction register-sig-details                        Register a registerSigDetails
+transaction register-forging-details                    Register a registerForgingDetails
 accounts current balance                                Check your balance
-accounts current publicKey                              Check your accounts public key
+accounts current public-key                             Check your accounts public key
 accounts current transactions                           Check your accounts transactions
 accounts current votes                                  Check your accounts votes
 accounts current block                                  Check your block
-accounts listByBalance                                  List your accounts
-accounts pendingTransactions                            List pending transactions
-delegates getForgingDelegates                           Get list of forging deletes
-delegates getByWeight                                   Delegates by weight in votes
+accounts list-by-balance                                List your accounts
+accounts pending-transactions                           List pending transactions
+delegates get-forging-delegates                         Get list of forging deletes
+delegates get-by-weight                                 Delegates by weight in votes
 ```
