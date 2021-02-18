@@ -45,9 +45,11 @@ const cli = new CliInterface({
         // prettier-ignore
         config = {
           ...config,
-          hostname: await cli.promptInput('Server IP:') || '34.227.22.98',
+          hostname: await cli.promptInput('Server IP:'),
           port: await cli.promptInput('Port: (Default: 7001)') || 7001,
         };
+
+        if(config.hostname === '') return cli.errorLog('Hostname needs to be provided')
 
         const save = ['Y', 'y'].includes(
           await cli.promptInput(`Save in your home dir? (Y/n)`)
@@ -72,9 +74,9 @@ const cli = new CliInterface({
 
     // Get passphrase of the wallet
     config.passphrase =
-      (await cli.promptInput('Passphrase:', true)) ||
-      'hundred news short weird ring exclude cement bundle finish horror evolve actual';
-    // 'clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle';
+      (await cli.promptInput('Passphrase:', true));
+
+    if(config.hostname === '') return cli.errorLog('Passphrase needs to be provided')
 
     client = ldposClient.createClient(config);
 
