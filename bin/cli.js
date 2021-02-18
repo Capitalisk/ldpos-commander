@@ -73,12 +73,14 @@ const cli = new CliInterface({
     // Get passphrase of the wallet
     config.passphrase =
       (await cli.promptInput('Passphrase:', true)) ||
-      'clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle';
+      'hundred news short weird ring exclude cement bundle finish horror evolve actual';
+    // 'clerk aware give dog reopen peasant duty cheese tobacco trouble gold angle';
+
     client = ldposClient.createClient(config);
 
     try {
       await client.connect({
-        passphrase: this.passphrase,
+        passphrase: config.passphrase,
       });
 
       cli.options.bindActionArgs = [client];
@@ -87,11 +89,14 @@ const cli = new CliInterface({
     }
   }
 
-  const ldposAction = async (fn, message, action = null) =>
+  const ldposAction = async (clientKey, message, action = null) => {
     cli.successLog(
-      typeof client[fn] === 'function' ? await client[fn](action) : client[fn],
+      typeof client[clientKey] === 'function'
+        ? await client[clientKey](action)
+        : client[clientKey],
       message
     );
+  };
 
   // prettier-ignore
   const commands = {
@@ -137,29 +142,29 @@ const cli = new CliInterface({
       },
       load: {
         forging: {
-          execute: async () => ldposAction('loadKeyIndex', 'verify forging results:', 'forging'),
+          execute: async () => ldposAction('loadKeyIndex', 'load forging results:', 'forging'),
           help: 'Loads forging key indexes'
         },
         multisig: {
-          execute: async () => ldposAction('loadKeyIndex', 'verify multisig results:', 'multisig'),
+          execute: async () => ldposAction('loadKeyIndex', 'load multisig results:', 'multisig'),
           help: 'Loads multisig key indexes'
         },
         sig: {
-          execute: async () => ldposAction('loadKeyIndex', 'verify sig results:', 'sig'),
+          execute: async () => ldposAction('loadKeyIndex', 'load sig results:', 'sig'),
           help: 'Loads sig key indexes'
         },
       },
       save: {
         forging: {
-          execute: async () => ldposAction('loadKeyIndex', 'verify forging results:', 'forging'),
+          execute: async () => ldposAction('loadKeyIndex', 'save forging results:', 'forging'),
           help: 'Saves forging key indexes'
         },
         multisig: {
-          execute: async () => ldposAction('loadKeyIndex', 'verify multisig results:', 'multisig'),
+          execute: async () => ldposAction('loadKeyIndex', 'save multisig results:', 'multisig'),
           help: 'Saves multisig key indexes'
         },
         sig: {
-          execute: async () => ldposAction('loadKeyIndex', 'verify sig results:', 'sig'),
+          execute: async () => ldposAction('loadKeyIndex', 'save sig results:', 'sig'),
           help: 'Saves sig key indexes'
         },
       },
@@ -286,5 +291,5 @@ const cli = new CliInterface({
     },
   }
 
-  cli.run(commands);
+  await cli.run(commands);
 })();
