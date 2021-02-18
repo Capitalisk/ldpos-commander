@@ -19,56 +19,46 @@ Usage: ldpos (OPTIONAL: ip:port) [options] [command]
 eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:7003 wallet get
 
-Options:'
-  -v                                             Get the version of the current LDPoS installation
-  --help                                         Get info on how to use this command
-  --hostname                                     hostname
-  --port                                         port
-  --network-symbol                               Network symbol (default: 'ldpos')
-Commands:
-
-  indexes:
-      sync:
-          all                                     Syncs all key indexes
-          forging                                 Syncs forging key indexes
-          multisig                                Syncs multisig key indexes
-          sig                                     Syncs sig key indexes
-      verify:
-          forging                                 Verifies forging key indexes
-          multisig                                Verifies multisig key indexes
-          sig                                     Verifies sig key indexes
-      load:
-          forging                                 Loads forging key indexes
-          multisig                                Loads multisig key indexes
-          sig                                     Loads sig key indexes
-      save:
-          forging                                 Saves forging key indexes
-          multisig                                Saves multisig key indexes
-          sig                                     Saves sig key indexes
-  wallet:                                         Commands for wallets
-      generate                                    Generates a wallet
-      get                                         Get wallet
-      wallet get-multisig-waller-members          Get wallet members
-  config:                                         Commands for config
-      network-symbol                              Gets current networkSymbol
-      clean                                       Removes config file with server ip, port
-                                                    and networkSymbol
-  transactions:                                   Commands for transactions
-      transfer                                    Transfer to a wallet
-      vote                                        Vote a a delegate
-      unvote                                      Unvote a a delegate
-      register-multisig-wallet                    Register a multisigwallet
-      register-multisig-details                   Register a registerMultisigDetails
-      register-sig-details                        Register a registerSigDetails
-      register-forging-details                    Register a registerForgingDetails
-  account:                                        Commands for your account
-      balance                                     Check your balance
-      public-keys                                 Check your public keys
-      balance                                     Check your balance
-      public-keys                                 Check your public keys
-      transactions                                Check your accounts transactions
-      votes                                       Check your accounts votes
-      block                                       Check your block
-      list                                        List your accounts
-      pending-transactions                        List pending transactions
+exit                                                    Exits the process
+version                                                 Displays version
+indexes sync all                                        Syncs all key indexes
+indexes sync forging                                    Syncs forging key indexes
+indexes sync multisig                                   Syncs multisig key indexes
+indexes sync sig                                        Syncs sig key indexes
+indexes verify forging                                  Verifies forging key indexes
+indexes verify multisig                                 Verifies multisig key indexes
+indexes verify sig                                      Verifies sig key indexes
+indexes load forging                                    Loads forging key indexes
+indexes load multisig                                   Loads multisig key indexes
+indexes load sig                                        Loads sig key indexes
+indexes save forging                                    Saves forging key indexes
+indexes save multisig                                   Saves multisig key indexes
+indexes save sig                                        Saves sig key indexes
+wallet balance                                          Get balance of prompted wallet
+wallet address                                          Get address of signed in wallet
+wallet generate                                         Generates a new wallet
+wallet get                                              Get wallet
+wallet getMultisigWalletMembers                         Get wallet members
+wallet publicKey                                        Get sig wallet public key
+wallet multisigPublicKey                                Get multisig wallet public key
+config clean                                            Removes config file with server ip, port and networkSymbol
+config networkSymbol                                    Gets current networkSymbol
+transaction transfer                                    Transfer to a wallet
+transaction vote                                        Vote a delegate
+transaction unvote                                      Unvote a delegate
+transaction multisigTransfer                            Transfers to a multisig wallet
+transaction verify                                      Verifies a transaction
+transaction registerMultisigWallet                      Register a multisigwallet
+transaction registerMultisigDetails                     Register a registerMultisigDetails
+transaction registerSigDetails                          Register a registerSigDetails
+transaction registerForgingDetails                      Register a registerForgingDetails
+accounts current balance                                Check your balance
+accounts current publicKey                              Check your accounts public key
+accounts current transactions                           Check your accounts transactions
+accounts current votes                                  Check your accounts votes
+accounts current block                                  Check your block
+accounts listByBalance                                  List your accounts
+accounts pendingTransactions                            List pending transactions
+delegates getForgingDelegates                           Get list of forging deletes
+delegates getByWeight                                   Delegates by weight in votes
 ```

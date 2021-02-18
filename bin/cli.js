@@ -248,7 +248,7 @@ const cli = new CliInterface({
       },
     },
     accounts: {
-      mine: {
+      current: {
         balance: {
           execute: async () => await cli.actions.balance(),
           help: 'Check your balance'
