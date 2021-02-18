@@ -254,7 +254,7 @@ const cli = new CliInterface({
           help: 'Check your balance'
         },
         publicKey: {
-          execute: () => console.log('needs implementation'),
+          execute: async () => ldposAction('sigPublicKey', 'public key:'),
           help: 'Check your accounts public key'
         },
         transactions: {
