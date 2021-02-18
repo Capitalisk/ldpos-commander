@@ -2,14 +2,14 @@
 
 const fs = require('fs-extra');
 const ldposClient = require('ldpos-client');
-const { CliInterface } = require('@maartennnn/cli-builder');
+const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
 const { FULL_CONFIG_PATH } = require('../lib/constants');
 
-const cli = new CliInterface({
+const cli = new REPLClient({
   interactive: true,
-  helpFooter: '',
-  helpHeader: 'This is shown in the header',
+  helpFooter: 'CLI of Leasehold',
+  helpHeader: 'This interface can be used both interactivaly and non-interactivaly\nInteractivaly: ldpos\nNon-interactivalt: ldpos <OPTIONAL: ip or ip:port> <command>',
   exceptions: ['clean'],
   actions,
 });
