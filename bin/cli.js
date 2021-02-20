@@ -9,7 +9,7 @@ const { FULL_CONFIG_PATH } = require('../lib/constants');
 const cli = new REPLClient({
   interactive: true,
   helpFooter: 'CLI of Leasehold',
-  helpHeader: 'This interface can be used both interactivaly and non-interactivaly\nInteractivaly: ldpos\nNon-interactivalt: ldpos <OPTIONAL: ip or ip:port> <command>',
+  helpHeader: 'This interface can be used both interactivaly and non-interactivaly\nInteractivaly: ldpos\nNon-interactivaly: ldpos <OPTIONAL: ip or ip:port> <command>',
   exceptions: ['clean'],
   actions,
 });
@@ -104,7 +104,7 @@ const cli = new REPLClient({
   const commands = {
     // login: () => console.log('login'),
     exit: {
-      execute: () => cli.exit(),
+      execute: () => cli.exit(0, true),
       help: 'Exits the process'
     },
     v: async () => cli.successLog(`Version: ${require('../package.json').version}`),
