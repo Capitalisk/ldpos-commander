@@ -5,17 +5,24 @@ const ldposClient = require('ldpos-client');
 const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
 const { FULL_CONFIG_PATH } = require('../lib/constants');
+const { promptList } = require('@maartennnn/cli-builder/src/lib');
+
+const NETWORK_SYMBOLS = ['clsk'];
 
 const cli = new REPLClient({
   interactive: true,
   helpFooter: 'CLI of Leasehold',
-  helpHeader: 'This interface can be used both interactivaly and non-interactivaly\nInteractivaly: ldpos\nNon-interactivaly: ldpos <OPTIONAL: ip or ip:port> <command>',
+  helpHeader:
+    'This interface can be used both interactivaly and non-interactivaly\nInteractivaly: ldpos\nNon-interactivaly: ldpos <OPTIONAL: ip or ip:port> <command>',
   exceptions: ['clean'],
   actions,
 });
 
 (async () => {
-  let config = {};
+  let config = {
+    chainModuleName: 'capitalisk_chain',
+    networkSymbol: 'clsk',
+  };
   let client;
 
   // If command is an ip change config to that IP
@@ -30,7 +37,7 @@ const cli = new REPLClient({
     // Take out the IP if provided
     cli.argv._ = cli.argv._.slice(1);
 
-    config = { hostname, port };
+    config = { ...config, hostname, port };
   }
 
   if (
@@ -40,7 +47,7 @@ const cli = new REPLClient({
   ) {
     if (!config.hostname) {
       if (await fs.pathExists(FULL_CONFIG_PATH)) {
-        config = require(FULL_CONFIG_PATH);
+        config = { ...config, ...require(FULL_CONFIG_PATH) };
       } else {
         // prettier-ignore
         config = {
@@ -49,7 +56,8 @@ const cli = new REPLClient({
           port: await cli.promptInput('Port: (Default: 7001)') || 7001,
         };
 
-        if(config.hostname === '') return cli.errorLog('Hostname needs to be provided')
+        if (config.hostname === '')
+          return cli.errorLog('Hostname needs to be provided');
 
         const save = ['Y', 'y'].includes(
           await cli.promptInput(`Save in your home dir? (Y/n)`)
@@ -63,20 +71,19 @@ const cli = new REPLClient({
       }
     }
 
-    if (!config.networkSymbol) {
-      config = {
-        ...config,
-        networkSymbol:
-          (await cli.promptInput('Network symbol: (Default: ldpos)')) ||
-          'ldpos',
-      };
-    }
+    // if (!config.networkSymbol) {
+    //   config.networkSymbol = await cli.promptList(
+    //     'Network symbol: (Default: clsk)',
+    //     NETWORK_SYMBOLS,
+    //     NETWORK_SYMBOLS[0]
+    //   );
+    // }
 
     // Get passphrase of the wallet
-    config.passphrase =
-      (await cli.promptInput('Passphrase:', true));
+    config.passphrase = await cli.promptInput('Passphrase:', true);
 
-    if(config.hostname === '') return cli.errorLog('Passphrase needs to be provided')
+    if (config.hostname === '')
+      return cli.errorLog('Passphrase needs to be provided');
 
     client = ldposClient.createClient(config);
 
@@ -207,8 +214,18 @@ const cli = new REPLClient({
         help: 'Removes config file with server ip, port and networkSymbol'
       },
       networkSymbol: {
-        execute: async () => ldposAction('getNetworkSymbol', 'Network symbol:'),
-        help: 'Gets current networkSymbol'
+        current: {
+          execute: async () => ldposAction('getNetworkSymbol', 'Network symbol:'),
+          help: 'Gets current networkSymbol'
+        },
+        change: {
+          execute: async () => {
+            const networkSymbol = await cli.promptList('Choose network symbol: (Default: clsk)', NETWORK_SYMBOLS, NETWORK_SYMBOLS[0])
+            config.networkSymbol = networkSymbol
+            client = ldposClient.createClient(config);
+          },
+          help: 'Change the protocol'
+        }
       },
     },
     transaction: {
