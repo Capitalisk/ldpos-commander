@@ -289,7 +289,7 @@ const cli = new REPLClient({
           help: 'Check your block'
         },
       },
-      listByBalance: {
+      getByBalance: {
         execute: async () => await cli.actions.listAccountsByBalance(),
         help: 'List your accounts'
       },
