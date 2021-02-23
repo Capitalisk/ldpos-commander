@@ -180,32 +180,24 @@ const cli = new REPLClient({
     },
     wallet: {
       balance: {
-        execute: async () => await cli.actions.getBalance(),
-        help: 'Get balance of prompted wallet'
-      },
-      address: {
-        execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
-        help: 'Get address of signed in wallet'
-      },
-      generate: {
-        execute: async () => ldposAction('generateWallet', 'generated wallet:'),
-        help: 'Generates a new wallet'
-      },
-      get: {
-        execute: async () => await cli.actions.getWallet(),
-        help: 'Get wallet'
-      },
-      getMultisigWalletMembers: {
-        execute: async () => await cli.actions.getMultisigWalletMembers(),
-        help: 'Get wallet members'
+        execute: async () => await cli.actions.balance(),
+        help: 'Check your balance'
       },
       publicKey: {
         execute: async () => ldposAction('sigPublicKey', 'public key:'),
-        help: 'Get sig wallet public key'
+        help: 'Check your accounts public key'
       },
-      multisigPublicKey: {
-        execute: async () => ldposAction('multisigPublicKey', 'public key:'),
-        help: 'Get multisig wallet public key'
+      transactions: {
+        execute: async () => await cli.actions.transactions(),
+        help: 'Check your accounts transactions'
+      },
+      votes: {
+        execute: async () => await cli.actions.votes(),
+        help: 'Check your accounts votes'
+      },
+      block: {
+        execute: async () => await cli.actions.block(),
+        help: 'Check your block'
       },
     },
     config: {
@@ -267,28 +259,6 @@ const cli = new REPLClient({
       },
     },
     accounts: {
-      current: {
-        balance: {
-          execute: async () => await cli.actions.balance(),
-          help: 'Check your balance'
-        },
-        publicKey: {
-          execute: async () => ldposAction('sigPublicKey', 'public key:'),
-          help: 'Check your accounts public key'
-        },
-        transactions: {
-          execute: async () => await cli.actions.transactions(),
-          help: 'Check your accounts transactions'
-        },
-        votes: {
-          execute: async () => await cli.actions.votes(),
-          help: 'Check your accounts votes'
-        },
-        block: {
-          execute: async () => await cli.actions.block(),
-          help: 'Check your block'
-        },
-      },
       listByBalance: {
         execute: async () => await cli.actions.listAccountsByBalance(),
         help: 'List your accounts'
@@ -296,6 +266,34 @@ const cli = new REPLClient({
       pendingTransactions: {
         execute: async () => await cli.actions.pendingTransactions(),
         help: 'List pending transactions'
+      },
+      balance: {
+        execute: async () => await cli.actions.getBalance(),
+        help: 'Get balance of prompted wallet'
+      },
+      address: {
+        execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
+        help: 'Get address of signed in wallet'
+      },
+      generate: {
+        execute: async () => ldposAction('generateWallet', 'generated wallet:'),
+        help: 'Generates a new wallet'
+      },
+      get: {
+        execute: async () => await cli.actions.getWallet(),
+        help: 'Get wallet'
+      },
+      getMultisigWalletMembers: {
+        execute: async () => await cli.actions.getMultisigWalletMembers(),
+        help: 'Get wallet members'
+      },
+      publicKey: {
+        execute: async () => ldposAction('sigPublicKey', 'public key:'),
+        help: 'Get sig wallet public key'
+      },
+      multisigPublicKey: {
+        execute: async () => ldposAction('multisigPublicKey', 'public key:'),
+        help: 'Get multisig wallet public key'
       },
     },
     delegates: {
