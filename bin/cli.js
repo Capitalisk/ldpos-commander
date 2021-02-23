@@ -5,7 +5,6 @@ const ldposClient = require('ldpos-client');
 const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
 const { FULL_CONFIG_PATH } = require('../lib/constants');
-const { promptList } = require('@maartennnn/cli-builder/src/lib');
 
 const NETWORK_SYMBOLS = ['clsk'];
 
@@ -13,7 +12,7 @@ const cli = new REPLClient({
   interactive: true,
   helpFooter: 'CLI of Leasehold',
   helpHeader:
-    'This interface can be used both interactivaly and non-interactivaly\nInteractivaly: ldpos\nNon-interactivaly: ldpos <OPTIONAL: ip or ip:port> <command>',
+    'This interface can be used both interactively and non-interactively\nInteractively: ldpos\nNon-interactively: ldpos <OPTIONAL: ip or ip:port> <command>',
   exceptions: ['clean'],
   actions,
 });
@@ -109,7 +108,6 @@ const cli = new REPLClient({
 
   // prettier-ignore
   const commands = {
-    // login: () => console.log('login'),
     exit: {
       execute: () => cli.exit(0, true),
       help: 'Exits the process'
@@ -185,15 +183,15 @@ const cli = new REPLClient({
       },
       publicKey: {
         execute: async () => ldposAction('sigPublicKey', 'public key:'),
-        help: 'Check your accounts public key'
+        help: 'Check your public key'
       },
       transactions: {
         execute: async () => await cli.actions.transactions(),
-        help: 'Check your accounts transactions'
+        help: 'Check your transactions'
       },
       votes: {
         execute: async () => await cli.actions.votes(),
-        help: 'Check your accounts votes'
+        help: 'Check your votes'
       },
       block: {
         execute: async () => await cli.actions.block(),
@@ -258,7 +256,7 @@ const cli = new REPLClient({
         help: 'Register a registerForgingDetails'
       },
     },
-    accounts: {
+    account: {
       listByBalance: {
         execute: async () => await cli.actions.listAccountsByBalance(),
         help: 'List your accounts'
