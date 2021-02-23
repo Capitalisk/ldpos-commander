@@ -289,7 +289,7 @@ const cli = new REPLClient({
           help: 'Check your block'
         },
       },
-      getByBalance: {
+      listByBalance: {
         execute: async () => await cli.actions.listAccountsByBalance(),
         help: 'List your accounts'
       },
@@ -303,7 +303,7 @@ const cli = new REPLClient({
         execute: async () => await cli.actions.getForgingDelegates(),
         help: 'Get list of forging deletes'
       },
-      getByWeight: {
+      listByWeight: {
         execute: async () => await cli.actions.getDelegatesByVoteWeight(),
         help: 'Delegates by weight in votes'
       }
