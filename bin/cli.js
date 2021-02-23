@@ -281,7 +281,7 @@ const cli = new REPLClient({
         execute: async () => await cli.actions.getWallet(),
         help: 'Get wallet'
       },
-      getMultisigWalletMembers: {
+      listMultisigWalletMembers: {
         execute: async () => await cli.actions.getMultisigWalletMembers(),
         help: 'Get wallet members'
       },
@@ -295,7 +295,7 @@ const cli = new REPLClient({
       },
     },
     delegates: {
-      getForgingDelegates: {
+      listForgingDelegates: {
         execute: async () => await cli.actions.getForgingDelegates(),
         help: 'Get list of forging deletes'
       },
