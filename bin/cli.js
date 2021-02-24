@@ -86,6 +86,7 @@ const cli = new REPLClient({
 
     client = ldposClient.createClient(config);
 
+    cli.options.bindActionArgs = [client];
     try {
       await client.connect({
         passphrase: config.passphrase,
@@ -93,8 +94,6 @@ const cli = new REPLClient({
 
       await client.syncAllKeyIndexes();
       console.log('All key indexes synced.');
-
-      cli.options.bindActionArgs = [client];
     } catch (e) {
       cli.errorLog(
         "Can't connect to socket\nThis can be because of a bad passphrase"
