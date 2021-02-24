@@ -91,6 +91,8 @@ const cli = new REPLClient({
         passphrase: config.passphrase,
       });
 
+      client.syncAllKeyIndexes()
+
       cli.options.bindActionArgs = [client];
     } catch (e) {
       cli.errorLog("Can't connect to socket");
@@ -114,68 +116,6 @@ const cli = new REPLClient({
     },
     v: async () => cli.successLog(`Version: ${require('../package.json').version}`),
     version: async () => cli.successLog(`Version: ${require('../package.json').version}`),
-    indexes: {
-      sync: {
-        all: {
-          execute: async () => ldposAction('syncAllKeyIndexes', 'sync all update results:'),
-          help: 'Syncs all key indexes'
-        },
-        forging: {
-          execute: async () => ldposAction('syncKeyIndex', 'sync forging update results:', 'forging'),
-          help: 'Syncs forging key indexes'
-        },
-        multisig: {
-          execute: async () => ldposAction('syncKeyIndex', 'sync multisig update results:', 'multisig'),
-          help: 'Syncs multisig key indexes'
-        },
-        sig: {
-          execute: async () => ldposAction('syncKeyIndex', 'sync sig update results:', 'sig'),
-          help: 'Syncs sig key indexes'
-        },
-      },
-      verify: {
-        forging: {
-          execute: async () => ldposAction('verifyKeyIndex', 'verify forging results:', 'forging'),
-          help: 'Verifies forging key indexes'
-        },
-        multisig: {
-          execute: async () => ldposAction('verifyKeyIndex', 'verify multisig results:', 'multisig'),
-          help: 'Verifies multisig key indexes'
-        },
-        sig: {
-          execute: async () => ldposAction('verifyKeyIndex', 'verify sig results:', 'sig'),
-          help: 'Verifies sig key indexes'
-        },
-      },
-      load: {
-        forging: {
-          execute: async () => ldposAction('loadKeyIndex', 'load forging results:', 'forging'),
-          help: 'Loads forging key indexes'
-        },
-        multisig: {
-          execute: async () => ldposAction('loadKeyIndex', 'load multisig results:', 'multisig'),
-          help: 'Loads multisig key indexes'
-        },
-        sig: {
-          execute: async () => ldposAction('loadKeyIndex', 'load sig results:', 'sig'),
-          help: 'Loads sig key indexes'
-        },
-      },
-      save: {
-        forging: {
-          execute: async () => ldposAction('loadKeyIndex', 'save forging results:', 'forging'),
-          help: 'Saves forging key indexes'
-        },
-        multisig: {
-          execute: async () => ldposAction('loadKeyIndex', 'save multisig results:', 'multisig'),
-          help: 'Saves multisig key indexes'
-        },
-        sig: {
-          execute: async () => ldposAction('loadKeyIndex', 'save sig results:', 'sig'),
-          help: 'Saves sig key indexes'
-        },
-      },
-    },
     wallet: {
       balance: {
         execute: async () => await cli.actions.balance(),
