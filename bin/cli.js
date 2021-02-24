@@ -179,6 +179,12 @@ const cli = new REPLClient({
           help: 'Transfers to a multisig wallet'
         },
       },
+      count: {
+        pending: {
+          execute: async () => await cli.actions.pendingTransactions(),
+          help: 'List pending transactions'
+        },
+      },
       // verify: {
       //   execute: async () => await cli.actions.verifyTransaction(),
       //   help: 'Verifies a transaction'
@@ -211,10 +217,6 @@ const cli = new REPLClient({
         multisigWalletMembers: {
           execute: async () => await cli.actions.listMultisigWalletMembers(),
           help: 'Get wallet members'
-        },
-        pendingTransactions: {
-          execute: async () => await cli.actions.pendingTransactions(),
-          help: 'List pending transactions'
         },
       },
       get: {
