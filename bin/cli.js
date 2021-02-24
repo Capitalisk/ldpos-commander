@@ -120,21 +120,23 @@ const cli = new REPLClient({
     v: async () => cli.successLog(`Version: ${require('../package.json').version}`),
     version: async () => cli.successLog(`Version: ${require('../package.json').version}`),
     wallet: {
-      balance: {
-        execute: async () => await cli.actions.balance(),
-        help: 'Check your balance'
-      },
-      publicKey: {
-        execute: async () => ldposAction('sigPublicKey', 'public key:'),
-        help: 'Check your public key'
-      },
-      transactions: {
-        execute: async () => await cli.actions.transactions(),
-        help: 'Check your transactions'
-      },
-      votes: {
-        execute: async () => await cli.actions.votes(),
-        help: 'Check your votes'
+      get: {
+        balance: {
+          execute: async () => await cli.actions.balance(),
+          help: 'Check your balance'
+        },
+        publicKey: {
+          execute: async () => ldposAction('sigPublicKey', 'public key:'),
+          help: 'Check your public key'
+        },
+        transactions: {
+          execute: async () => await cli.actions.transactions(),
+          help: 'Check your transactions'
+        },
+        votes: {
+          execute: async () => await cli.actions.votes(),
+          help: 'Check your votes'
+        },
       },
     },
     config: {
@@ -158,89 +160,99 @@ const cli = new REPLClient({
       },
     },
     transaction: {
-      transfer: {
-        execute: async () => await cli.actions.transfer(),
-        help: 'Transfer to a wallet'
+      post: {
+        transfer: {
+          execute: async () => await cli.actions.transfer(),
+          help: 'Transfer to a wallet'
+        },
+        vote: {
+          execute: async () => await cli.actions.vote(),
+          help: 'Vote a delegate'
+        },
+        unvote: {
+          execute: async () => await cli.actions.unvote(),
+          help: 'Unvote a delegate'
+        },
+        multisigTransfer: {
+          execute: async () => await cli.actions.multisignTransfer(),
+          help: 'Transfers to a multisig wallet'
+        },
       },
-      vote: {
-        execute: async () => await cli.actions.vote(),
-        help: 'Vote a delegate'
-      },
-      unvote: {
-        execute: async () => await cli.actions.unvote(),
-        help: 'Unvote a delegate'
-      },
-      multisigTransfer: {
-        execute: async () => await cli.actions.multisignTransfer(),
-        help: 'Transfers to a multisig wallet'
-      },
-      verify: {
-        execute: async () => await cli.actions.verifyTransaction(),
-        help: 'Verifies a transaction'
-      },
-      registerMultisigWallet: {
-        execute: async () => await cli.actions.registerMultisigWallet(),
-        help: 'Register a multisigwallet'
-      },
-      registerMultisigDetails: {
-        execute: async () => await cli.actions.registerMultisigDetails(),
-        help: 'Register a registerMultisigDetails'
-      },
-      registerSigDetails: {
-        execute: async () => await cli.actions.registerSigDetails(),
-        help: 'Register a registerSigDetails'
-      },
-      registerForgingDetails: {
-        execute: async () => await cli.actions.registerForgingDetails(),
-        help: 'Register a registerForgingDetails'
-      },
+      // verify: {
+      //   execute: async () => await cli.actions.verifyTransaction(),
+      //   help: 'Verifies a transaction'
+      // },
+      register : {
+        multisigWallet: {
+          execute: async () => await cli.actions.registerMultisigWallet(),
+          help: 'Register a multisigwallet'
+        },
+        multisigDetails: {
+          execute: async () => await cli.actions.registerMultisigDetails(),
+          help: 'Register a registerMultisigDetails'
+        },
+        sigDetails: {
+          execute: async () => await cli.actions.registerSigDetails(),
+          help: 'Register a registerSigDetails'
+        },
+        forgingDetails: {
+          execute: async () => await cli.actions.registerForgingDetails(),
+          help: 'Register a registerForgingDetails'
+        },
+      }
     },
     account: {
-      listByBalance: {
-        execute: async () => await cli.actions.listAccountsByBalance(),
-        help: 'List accounts'
-      },
-      pendingTransactions: {
-        execute: async () => await cli.actions.pendingTransactions(),
-        help: 'List pending transactions'
-      },
-      listMultisigWalletMembers: {
-        execute: async () => await cli.actions.listMultisigWalletMembers(),
-        help: 'Get wallet members'
-      },
-      balance: {
-        execute: async () => await cli.actions.getBalance(),
-        help: 'Get balance of prompted wallet'
+      list: {
+        byBalance: {
+          execute: async () => await cli.actions.listAccountsByBalance(),
+          help: 'List accounts'
+        },
+        multisigWalletMembers: {
+          execute: async () => await cli.actions.listMultisigWalletMembers(),
+          help: 'Get wallet members'
+        },
+        pendingTransactions: {
+          execute: async () => await cli.actions.pendingTransactions(),
+          help: 'List pending transactions'
+        },
       },
       get: {
-        execute: async () => await cli.actions.getWallet(),
-        help: 'Get wallet'
-      },
-      address: {
-        execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
-        help: 'Get address of signed in wallet'
+        balance: {
+          execute: async () => await cli.actions.getBalance(),
+          help: 'Get balance of prompted wallet'
+        },
+        wallet: {
+          execute: async () => await cli.actions.getWallet(),
+          help: 'Get wallet'
+        },
+        address: {
+          execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
+          help: 'Get address of signed in wallet'
+        },
+        publicKey: {
+          execute: async () => ldposAction('sigPublicKey', 'public key:'),
+          help: 'Get sig wallet public key'
+        },
+        multisigPublicKey: {
+          execute: async () => ldposAction('multisigPublicKey', 'public key:'),
+          help: 'Get multisig wallet public key'
+        },
       },
       generate: {
         execute: async () => ldposAction('generateWallet', 'generated wallet:'),
         help: 'Generates a new wallet'
       },
-      publicKey: {
-        execute: async () => ldposAction('sigPublicKey', 'public key:'),
-        help: 'Get sig wallet public key'
-      },
-      multisigPublicKey: {
-        execute: async () => ldposAction('multisigPublicKey', 'public key:'),
-        help: 'Get multisig wallet public key'
-      },
     },
     delegates: {
-      listForgingDelegates: {
-        execute: async () => await cli.actions.listForgingDelegates(),
-        help: 'List forging deletes'
-      },
-      listByWeight: {
-        execute: async () => await cli.actions.listDelegatesByVoteWeight(),
-        help: 'Delegates by weight in votes'
+      list :{
+        forgingDelegates: {
+          execute: async () => await cli.actions.listForgingDelegates(),
+          help: 'List forging deletes'
+        },
+        byWeight: {
+          execute: async () => await cli.actions.listDelegatesByVoteWeight(),
+          help: 'Delegates by weight in votes'
+        }
       }
     },
   }
