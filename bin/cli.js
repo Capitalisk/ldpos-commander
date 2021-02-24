@@ -91,12 +91,14 @@ const cli = new REPLClient({
         passphrase: config.passphrase,
       });
 
-      await client.syncAllKeyIndexes()
-      console.log('All key indexes synced.')
+      await client.syncAllKeyIndexes();
+      console.log('All key indexes synced.');
 
       cli.options.bindActionArgs = [client];
     } catch (e) {
-      cli.errorLog("Can't connect to socket\nThis can be because of a bad passphrase");
+      cli.errorLog(
+        "Can't connect to socket\nThis can be because of a bad passphrase"
+      );
     }
   }
 
@@ -133,10 +135,6 @@ const cli = new REPLClient({
       votes: {
         execute: async () => await cli.actions.votes(),
         help: 'Check your votes'
-      },
-      block: {
-        execute: async () => await cli.actions.block(),
-        help: 'Check your block'
       },
     },
     config: {
@@ -200,15 +198,23 @@ const cli = new REPLClient({
     account: {
       listByBalance: {
         execute: async () => await cli.actions.listAccountsByBalance(),
-        help: 'List your accounts'
+        help: 'List accounts'
       },
       pendingTransactions: {
         execute: async () => await cli.actions.pendingTransactions(),
         help: 'List pending transactions'
       },
+      listMultisigWalletMembers: {
+        execute: async () => await cli.actions.listMultisigWalletMembers(),
+        help: 'Get wallet members'
+      },
       balance: {
         execute: async () => await cli.actions.getBalance(),
         help: 'Get balance of prompted wallet'
+      },
+      get: {
+        execute: async () => await cli.actions.getWallet(),
+        help: 'Get wallet'
       },
       address: {
         execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
@@ -217,14 +223,6 @@ const cli = new REPLClient({
       generate: {
         execute: async () => ldposAction('generateWallet', 'generated wallet:'),
         help: 'Generates a new wallet'
-      },
-      get: {
-        execute: async () => await cli.actions.getWallet(),
-        help: 'Get wallet'
-      },
-      listMultisigWalletMembers: {
-        execute: async () => await cli.actions.getMultisigWalletMembers(),
-        help: 'Get wallet members'
       },
       publicKey: {
         execute: async () => ldposAction('sigPublicKey', 'public key:'),
@@ -237,11 +235,11 @@ const cli = new REPLClient({
     },
     delegates: {
       listForgingDelegates: {
-        execute: async () => await cli.actions.getForgingDelegates(),
-        help: 'Get list of forging deletes'
+        execute: async () => await cli.actions.listForgingDelegates(),
+        help: 'List forging deletes'
       },
       listByWeight: {
-        execute: async () => await cli.actions.getDelegatesByVoteWeight(),
+        execute: async () => await cli.actions.listDelegatesByVoteWeight(),
         help: 'Delegates by weight in votes'
       }
     },
