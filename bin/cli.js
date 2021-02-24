@@ -119,6 +119,16 @@ const cli = new REPLClient({
     v: async () => cli.successLog(`Version: ${require('../package.json').version}`),
     version: async () => cli.successLog(`Version: ${require('../package.json').version}`),
     wallet: {
+      list: {
+        transactions: {
+          execute: async () => await cli.actions.transactions(),
+          help: 'Check your transactions'
+        },
+        votes: {
+          execute: async () => await cli.actions.votes(),
+          help: 'Check your votes'
+        },
+      },
       get: {
         balance: {
           execute: async () => await cli.actions.balance(),
@@ -127,14 +137,6 @@ const cli = new REPLClient({
         publicKey: {
           execute: async () => ldposAction('sigPublicKey', 'public key:'),
           help: 'Check your public key'
-        },
-        transactions: {
-          execute: async () => await cli.actions.transactions(),
-          help: 'Check your transactions'
-        },
-        votes: {
-          execute: async () => await cli.actions.votes(),
-          help: 'Check your votes'
         },
       },
     },
