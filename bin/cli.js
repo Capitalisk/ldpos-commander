@@ -142,6 +142,10 @@ const cli = new REPLClient({
           execute: async () => ldposAction('multisigPublicKey', 'public key:'),
           help: 'Get multisig wallet public key'
         },
+        address: {
+          execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
+          help: 'Get address of signed in wallet'
+        },
       },
     },
     config: {
@@ -231,10 +235,6 @@ const cli = new REPLClient({
         wallet: {
           execute: async () => await cli.actions.getWallet(),
           help: 'Get wallet'
-        },
-        address: {
-          execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
-          help: 'Get address of signed in wallet'
         },
         publicKey: {
           execute: async () => await cli.actions.getPublicKey(),
