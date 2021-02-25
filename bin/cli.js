@@ -86,9 +86,7 @@ const cli = new REPLClient({
 
     client = ldposClient.createClient(config);
 
-    const minFees = await client.getMinFees()
-
-    cli.options.bindActionArgs = [client, minFees];
+    cli.options.bindActionArgs = [client];
     try {
       await client.connect({
         passphrase: config.passphrase,
@@ -139,6 +137,10 @@ const cli = new REPLClient({
         publicKey: {
           execute: async () => ldposAction('sigPublicKey', 'public key:'),
           help: 'Check your public key'
+        },
+        multisigPublicKey: {
+          execute: async () => ldposAction('multisigPublicKey', 'public key:'),
+          help: 'Get multisig wallet public key'
         },
       },
     },
@@ -237,10 +239,6 @@ const cli = new REPLClient({
         publicKey: {
           execute: async () => ldposAction('sigPublicKey', 'public key:'),
           help: 'Get sig wallet public key'
-        },
-        multisigPublicKey: {
-          execute: async () => ldposAction('multisigPublicKey', 'public key:'),
-          help: 'Get multisig wallet public key'
         },
       },
       generate: {
