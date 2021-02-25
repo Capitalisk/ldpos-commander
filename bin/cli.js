@@ -86,7 +86,9 @@ const cli = new REPLClient({
 
     client = ldposClient.createClient(config);
 
-    cli.options.bindActionArgs = [client];
+    const minFees = await client.getMinFees()
+
+    cli.options.bindActionArgs = [client, minFees];
     try {
       await client.connect({
         passphrase: config.passphrase,
