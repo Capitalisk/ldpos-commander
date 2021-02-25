@@ -186,6 +186,22 @@ const cli = new REPLClient({
           execute: async () => await cli.actions.multisigTransfer(),
           help: 'Transfers to a multisig wallet'
         },
+        registerMultisigWallet: {
+          execute: async () => await cli.actions.registerMultisigWallet(),
+          help: 'Register a multisigwallet'
+        },
+        registerMultisigDetails: {
+          execute: async () => await cli.actions.registerMultisigDetails(),
+          help: 'Register a registerMultisigDetails'
+        },
+        registerSigDetails: {
+          execute: async () => await cli.actions.registerSigDetails(),
+          help: 'Register a registerSigDetails'
+        },
+        registerForgingDetails: {
+          execute: async () => await cli.actions.registerForgingDetails(),
+          help: 'Register a registerForgingDetails'
+        },
       },
       count: {
         pending: {
@@ -197,24 +213,6 @@ const cli = new REPLClient({
       //   execute: async () => await cli.actions.verifyTransaction(),
       //   help: 'Verifies a transaction'
       // },
-      register : {
-        multisigWallet: {
-          execute: async () => await cli.actions.registerMultisigWallet(),
-          help: 'Register a multisigwallet'
-        },
-        multisigDetails: {
-          execute: async () => await cli.actions.registerMultisigDetails(),
-          help: 'Register a registerMultisigDetails'
-        },
-        sigDetails: {
-          execute: async () => await cli.actions.registerSigDetails(),
-          help: 'Register a registerSigDetails'
-        },
-        forgingDetails: {
-          execute: async () => await cli.actions.registerForgingDetails(),
-          help: 'Register a registerForgingDetails'
-        },
-      }
     },
     account: {
       list: {
