@@ -237,8 +237,12 @@ const cli = new REPLClient({
           help: 'Get address of signed in wallet'
         },
         publicKey: {
-          execute: async () => ldposAction('sigPublicKey', 'public key:'),
-          help: 'Get sig wallet public key'
+          execute: async () => await cli.actions.getPublicKey(),
+          help: 'Get a sig wallet public key'
+        },
+        multisigPublicKey: {
+          execute: async () => await cli.actions.getMultisigPublicKey(),
+          help: 'Get a sig wallet public key'
         },
       },
       generate: {
