@@ -248,7 +248,7 @@ const cli = new REPLClient({
         help: 'Generates a new wallet'
       },
     },
-    delegates: {
+    delegate: {
       list :{
         forgingDelegates: {
           execute: async () => await cli.actions.listForgingDelegates(),
