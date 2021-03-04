@@ -254,7 +254,7 @@ const cli = new REPLClient({
           execute: async () => await cli.actions.listForgingDelegates(),
           help: 'List forging deletes'
         },
-        byWeight: {
+        byVoteWeight: {
           execute: async () => await cli.actions.listDelegatesByVoteWeight(),
           help: 'Delegates by weight in votes'
         }
