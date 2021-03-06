@@ -89,6 +89,7 @@ const cli = new REPLClient({
         ...config.passphrases,
         forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
       };
+      delete cli.argv.f
     }
 
     if (cli.argv.hasOwnProperty('m')) {
@@ -96,6 +97,7 @@ const cli = new REPLClient({
         ...config.passphrases,
         multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
       };
+      delete cli.argv.m
     }
 
     if (config.hostname === '')
