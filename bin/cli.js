@@ -255,7 +255,7 @@ const cli = new REPLClient({
           help: 'Register a registerForgingDetails',
         },
       },
-      count: {
+      list: {
         pending: {
           execute: async () => await cli.actions.pendingTransactions(),
           help: 'List pending transactions',
