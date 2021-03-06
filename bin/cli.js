@@ -80,7 +80,23 @@ const cli = new REPLClient({
     // }
 
     // Get passphrase of the wallet
-    config.passphrase = await cli.promptInput('Passphrase:', true);
+    config.passphrases = {
+      passphrase: await cli.promptInput('Passphrase:', true),
+    };
+
+    if (cli.argv.hasOwnProperty('f')) {
+      config.passphrases = {
+        ...config.passphrases,
+        forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
+      };
+    }
+
+    if (cli.argv.hasOwnProperty('m')) {
+      config.passphrases = {
+        ...config.passphrases,
+        multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
+      };
+    }
 
     if (config.hostname === '')
       return cli.errorLog('Passphrase needs to be provided');
@@ -90,7 +106,7 @@ const cli = new REPLClient({
     cli.options.bindActionArgs = [client];
     try {
       await client.connect({
-        passphrase: config.passphrase,
+        ...config.passphrases,
       });
 
       await client.syncAllKeyIndexes();
@@ -135,7 +151,7 @@ const cli = new REPLClient({
         balance: {
           help: 'Check your balance',
         },
-        publicKey: {
+        forgingPublicKey: {
           help: 'Check your public key',
         },
         multisigPublicKey: {
@@ -144,17 +160,24 @@ const cli = new REPLClient({
         address: {
           help: 'Get address of signed in wallet',
         },
+        '<custom-property>': {
+          help: 'Get a custom property on the wallet',
+        },
         async execute(param) {
+          param = cli.kebabCaseToCamel(param);
           const address = await client.getWalletAddress();
 
-          const output = await client.getAccount(address);
+          const data = await client.getAccount(address);
 
-          this.successLog(
-            typeof parseInt(output[param]) === 'number'
-              ? _integerToDecimal(output[param])
-              : output[param],
-            `${param}:`
-          );
+          if (!data[param] === undefined)
+            throw new Error('Custom property not found.');
+
+          let output;
+
+          if (parseInt(data[param]) !== NaN) output = data[param];
+          else output = _integerToDecimal(data[param]);
+
+          this.successLog(output, `${param}:`);
         },
       },
     },
