@@ -109,12 +109,17 @@ const cli = new REPLClient({
         ...config.passphrases,
       });
 
-      await client.syncAllKeyIndexes();
       console.log('All key indexes synced.');
     } catch (e) {
       cli.errorLog(
         "Can't connect to socket\nThis can be because of a bad passphrase"
       );
+    }
+
+    try {
+      await client.syncAllKeyIndexes();
+    } catch (e) {
+      cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`);
     }
   }
 
