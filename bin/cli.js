@@ -197,7 +197,7 @@ const cli = new REPLClient({
     },
     config: {
       clean: {
-        execute: async () => await fs.remove(cli.fullConfigPath),
+        execute: async () => await fs.remove(FULL_CONFIG_PATH),
         help: 'Removes config file with server ip, port and networkSymbol',
       },
       networkSymbol: {
