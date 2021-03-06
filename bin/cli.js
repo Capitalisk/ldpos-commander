@@ -99,7 +99,7 @@ const cli = new REPLClient({
     }
 
     if (config.hostname === '')
-      return cli.errorLog('Passphrase needs to be provided');
+      return cli.errorLog('Hostname needs to be provided');
 
     client = ldposClient.createClient(config);
 
