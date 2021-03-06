@@ -125,6 +125,22 @@ const cli = new REPLClient({
     }
   }
 
+  const customProperty = async function (param, address) {
+    param = cli.kebabCaseToCamel(param);
+
+    const data = await client.getAccount(address);
+
+    if (data[param] === undefined)
+      throw new Error('Custom property not found.');
+
+    let output;
+
+    if (parseInt(data[param]) === NaN) output = data[param];
+    else output = _integerToDecimal(data[param]);
+
+    this.successLog(output, `${param}:`);
+  };
+
   const ldposAction = async (clientKey, message, arg = null) => {
     cli.successLog(
       typeof client[clientKey] === 'function'
@@ -158,11 +174,14 @@ const cli = new REPLClient({
         balance: {
           help: 'Check your balance',
         },
-        forgingPublicKey: {
+        sigPublicKey: {
           help: 'Check your public key',
         },
+        forgingPublicKey: {
+          help: 'Check your forging public key',
+        },
         multisigPublicKey: {
-          help: 'Get multisig wallet public key',
+          help: 'Check your multisig public key',
         },
         address: {
           help: 'Get address of signed in wallet',
@@ -170,21 +189,9 @@ const cli = new REPLClient({
         '<custom-property>': {
           help: 'Get a custom property on the wallet',
         },
-        async execute(param) {
-          param = cli.kebabCaseToCamel(param);
+        execute: async function (param) {
           const address = await client.getWalletAddress();
-
-          const data = await client.getAccount(address);
-
-          if (!data[param] === undefined)
-            throw new Error('Custom property not found.');
-
-          let output;
-
-          if (parseInt(data[param]) !== NaN) output = data[param];
-          else output = _integerToDecimal(data[param]);
-
-          this.successLog(output, `${param}:`);
+          await customProperty.call(this, param, address);
         },
       },
     },
@@ -254,10 +261,6 @@ const cli = new REPLClient({
           help: 'List pending transactions',
         },
       },
-      // verify: {
-      //   execute: async () => await cli.actions.verifyTransaction(),
-      //   help: 'Verifies a transaction'
-      // },
     },
     account: {
       list: {
@@ -289,21 +292,9 @@ const cli = new REPLClient({
         '<custom-property>': {
           help: 'Get a custom property on the wallet',
         },
-        async execute(param) {
-          param = cli.kebabCaseToCamel(param);
+        execute: async function (param) {
           const address = await this.promptInput('Wallet address:');
-
-          const data = await client.getAccount(address);
-
-          if (!data[param] === undefined)
-            throw new Error('Custom property not found.');
-
-          let output;
-
-          if (parseInt(data[param]) !== NaN) output = data[param];
-          else output = _integerToDecimal(data[param]);
-
-          this.successLog(output, `${param}:`);
+          await customProperty.call(this, param, address);
         },
       },
       generate: {
