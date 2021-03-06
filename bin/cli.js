@@ -89,7 +89,7 @@ const cli = new REPLClient({
         ...config.passphrases,
         forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
       };
-      delete cli.argv.f
+      delete cli.argv.f;
     }
 
     if (cli.argv.hasOwnProperty('m')) {
@@ -97,7 +97,7 @@ const cli = new REPLClient({
         ...config.passphrases,
         multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
       };
-      delete cli.argv.m
+      delete cli.argv.m;
     }
 
     if (config.hostname === '')
@@ -272,20 +272,38 @@ const cli = new REPLClient({
       },
       get: {
         balance: {
-          execute: async () => await cli.actions.getBalance(),
           help: 'Get balance of prompted wallet',
         },
         wallet: {
-          execute: async () => await cli.actions.getWallet(),
           help: 'Get wallet',
         },
-        publicKey: {
-          execute: async () => await cli.actions.getPublicKey(),
-          help: 'Get a sig wallet public key',
+        sigPublicKey: {
+          help: 'Get a sig public key',
         },
         multisigPublicKey: {
-          execute: async () => await cli.actions.getMultisigPublicKey(),
-          help: 'Get a sig wallet public key',
+          help: 'Get a multisig public key',
+        },
+        forgingPublicKey: {
+          help: 'Get a multisig public key',
+        },
+        '<custom-property>': {
+          help: 'Get a custom property on the wallet',
+        },
+        async execute(param) {
+          param = cli.kebabCaseToCamel(param);
+          const address = await this.promptInput('Wallet address:');
+
+          const data = await client.getAccount(address);
+
+          if (!data[param] === undefined)
+            throw new Error('Custom property not found.');
+
+          let output;
+
+          if (parseInt(data[param]) !== NaN) output = data[param];
+          else output = _integerToDecimal(data[param]);
+
+          this.successLog(output, `${param}:`);
         },
       },
       generate: {
