@@ -126,7 +126,7 @@ const cli = new REPLClient({
   }
 
   const customProperty = async function (param, address) {
-    param = cli.kebabCaseToCamel(param);
+    param = this.kebabCaseToCamel(param);
 
     const data = await client.getAccount(address);
 
@@ -135,10 +135,10 @@ const cli = new REPLClient({
 
     let output;
 
-    if (parseInt(data[param]) === NaN) output = data[param];
+    if (!Number.isInteger(parseInt(data[param]))) output = data[param];
     else output = _integerToDecimal(data[param]);
 
-    this.successLog(output, `${param}:`);
+    this.successLog(output, `${this.camelCaseToKebab(param)}:`);
   };
 
   const ldposAction = async (clientKey, message, arg = null) => {
