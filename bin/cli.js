@@ -5,6 +5,7 @@ const ldposClient = require('ldpos-client');
 const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
 const { FULL_CONFIG_PATH } = require('../lib/constants');
+const { _integerToDecimal } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
 
@@ -79,27 +80,66 @@ const cli = new REPLClient({
     // }
 
     // Get passphrase of the wallet
-    config.passphrase = await cli.promptInput('Passphrase:', true);
+    config.passphrases = {
+      passphrase: await cli.promptInput('Passphrase:', true),
+    };
+
+    if (cli.argv.hasOwnProperty('f')) {
+      config.passphrases = {
+        ...config.passphrases,
+        forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
+      };
+      delete cli.argv.f;
+    }
+
+    if (cli.argv.hasOwnProperty('m')) {
+      config.passphrases = {
+        ...config.passphrases,
+        multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
+      };
+      delete cli.argv.m;
+    }
 
     if (config.hostname === '')
-      return cli.errorLog('Passphrase needs to be provided');
+      return cli.errorLog('Hostname needs to be provided');
 
     client = ldposClient.createClient(config);
 
     cli.options.bindActionArgs = [client];
     try {
       await client.connect({
-        passphrase: config.passphrase,
+        ...config.passphrases,
       });
 
-      await client.syncAllKeyIndexes();
       console.log('All key indexes synced.');
     } catch (e) {
       cli.errorLog(
         "Can't connect to socket\nThis can be because of a bad passphrase"
       );
     }
+
+    try {
+      await client.syncAllKeyIndexes();
+    } catch (e) {
+      cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`);
+    }
   }
+
+  const customProperty = async function (param, address) {
+    param = this.kebabCaseToCamel(param);
+
+    const data = await client.getAccount(address);
+
+    if (data[param] === undefined)
+      throw new Error('Custom property not found.');
+
+    let output;
+
+    if (!Number.isInteger(parseInt(data[param]))) output = data[param];
+    else output = _integerToDecimal(data[param]);
+
+    this.successLog(output, `${this.camelCaseToKebab(param)}:`);
+  };
 
   const ldposAction = async (clientKey, message, arg = null) => {
     cli.successLog(
@@ -110,157 +150,171 @@ const cli = new REPLClient({
     );
   };
 
-  // prettier-ignore
   const commands = {
     exit: {
       execute: () => cli.exit(0, true),
-      help: 'Exits the process'
+      help: 'Exits the process',
     },
-    v: async () => cli.successLog(`Version: ${require('../package.json').version}`),
-    version: async () => cli.successLog(`Version: ${require('../package.json').version}`),
+    v: async () =>
+      cli.successLog(`Version: ${require('../package.json').version}`),
+    version: async () =>
+      cli.successLog(`Version: ${require('../package.json').version}`),
     wallet: {
       list: {
         transactions: {
           execute: async () => await cli.actions.transactions(),
-          help: 'Check your transactions'
+          help: 'Check your transactions',
         },
         votes: {
           execute: async () => await cli.actions.votes(),
-          help: 'Check your votes'
+          help: 'Check your votes',
         },
       },
       get: {
         balance: {
-          execute: async () => await cli.actions.balance(),
-          help: 'Check your balance'
+          help: 'Check your balance',
         },
-        publicKey: {
-          execute: async () => ldposAction('sigPublicKey', 'public key:'),
-          help: 'Check your public key'
+        sigPublicKey: {
+          help: 'Check your public key',
+        },
+        forgingPublicKey: {
+          help: 'Check your forging public key',
         },
         multisigPublicKey: {
-          execute: async () => ldposAction('multisigPublicKey', 'public key:'),
-          help: 'Get multisig wallet public key'
+          help: 'Check your multisig public key',
         },
         address: {
-          execute: async () => ldposAction('getWalletAddress', 'wallet address:'),
-          help: 'Get address of signed in wallet'
+          help: 'Get address of signed in wallet',
+        },
+        '<custom-property>': {
+          help: 'Get a custom property on the wallet',
+        },
+        execute: async function (param) {
+          const address = await client.getWalletAddress();
+          await customProperty.call(this, param, address);
         },
       },
     },
     config: {
       clean: {
         execute: async () => await fs.remove(cli.fullConfigPath),
-        help: 'Removes config file with server ip, port and networkSymbol'
+        help: 'Removes config file with server ip, port and networkSymbol',
       },
       networkSymbol: {
         current: {
-          execute: async () => ldposAction('getNetworkSymbol', 'Network symbol:'),
-          help: 'Gets current networkSymbol'
+          execute: async () =>
+            ldposAction('getNetworkSymbol', 'Network symbol:'),
+          help: 'Gets current networkSymbol',
         },
         change: {
           execute: async () => {
-            const networkSymbol = await cli.promptList('Choose network symbol: (Default: clsk)', NETWORK_SYMBOLS, NETWORK_SYMBOLS[0])
-            config.networkSymbol = networkSymbol
+            const networkSymbol = await cli.promptList(
+              'Choose network symbol: (Default: clsk)',
+              NETWORK_SYMBOLS,
+              NETWORK_SYMBOLS[0]
+            );
+            config.networkSymbol = networkSymbol;
             client = ldposClient.createClient(config);
           },
-          help: 'Change the protocol'
-        }
+          help: 'Change the protocol',
+        },
       },
     },
     transaction: {
       post: {
         transfer: {
           execute: async () => await cli.actions.transfer(),
-          help: 'Transfer to a wallet'
+          help: 'Transfer to a wallet',
         },
         vote: {
           execute: async () => await cli.actions.vote(),
-          help: 'Vote a delegate'
+          help: 'Vote a delegate',
         },
         unvote: {
           execute: async () => await cli.actions.unvote(),
-          help: 'Unvote a delegate'
+          help: 'Unvote a delegate',
         },
         multisigTransfer: {
           execute: async () => await cli.actions.multisigTransfer(),
-          help: 'Transfers to a multisig wallet'
+          help: 'Transfers to a multisig wallet',
         },
         registerMultisigWallet: {
           execute: async () => await cli.actions.registerMultisigWallet(),
-          help: 'Register a multisigwallet'
+          help: 'Register a multisigwallet',
         },
         registerMultisigDetails: {
           execute: async () => await cli.actions.registerMultisigDetails(),
-          help: 'Register a registerMultisigDetails'
+          help: 'Register a registerMultisigDetails',
         },
         registerSigDetails: {
           execute: async () => await cli.actions.registerSigDetails(),
-          help: 'Register a registerSigDetails'
+          help: 'Register a registerSigDetails',
         },
         registerForgingDetails: {
           execute: async () => await cli.actions.registerForgingDetails(),
-          help: 'Register a registerForgingDetails'
+          help: 'Register a registerForgingDetails',
         },
       },
       count: {
         pending: {
           execute: async () => await cli.actions.pendingTransactions(),
-          help: 'List pending transactions'
+          help: 'List pending transactions',
         },
       },
-      // verify: {
-      //   execute: async () => await cli.actions.verifyTransaction(),
-      //   help: 'Verifies a transaction'
-      // },
     },
     account: {
       list: {
         byBalance: {
           execute: async () => await cli.actions.listAccountsByBalance(),
-          help: 'List accounts'
+          help: 'List accounts',
         },
         multisigWalletMembers: {
           execute: async () => await cli.actions.listMultisigWalletMembers(),
-          help: 'Get wallet members'
+          help: 'Get wallet members',
         },
       },
       get: {
         balance: {
-          execute: async () => await cli.actions.getBalance(),
-          help: 'Get balance of prompted wallet'
+          help: 'Get balance of prompted wallet',
         },
         wallet: {
-          execute: async () => await cli.actions.getWallet(),
-          help: 'Get wallet'
+          help: 'Get wallet',
         },
-        publicKey: {
-          execute: async () => await cli.actions.getPublicKey(),
-          help: 'Get a sig wallet public key'
+        sigPublicKey: {
+          help: 'Get a sig public key',
         },
         multisigPublicKey: {
-          execute: async () => await cli.actions.getMultisigPublicKey(),
-          help: 'Get a sig wallet public key'
+          help: 'Get a multisig public key',
+        },
+        forgingPublicKey: {
+          help: 'Get a multisig public key',
+        },
+        '<custom-property>': {
+          help: 'Get a custom property on the wallet',
+        },
+        execute: async function (param) {
+          const address = await this.promptInput('Wallet address:');
+          await customProperty.call(this, param, address);
         },
       },
       generate: {
         execute: async () => ldposAction('generateWallet', 'generated wallet:'),
-        help: 'Generates a new wallet'
+        help: 'Generates a new wallet',
       },
     },
     delegate: {
-      list :{
+      list: {
         forgingDelegates: {
           execute: async () => await cli.actions.listForgingDelegates(),
-          help: 'List forging deletes'
+          help: 'List forging deletes',
         },
         byVoteWeight: {
           execute: async () => await cli.actions.listDelegatesByVoteWeight(),
-          help: 'Delegates by weight in votes'
-        }
-      }
+          help: 'Delegates by weight in votes',
+        },
+      },
     },
-  }
+  };
 
   await cli.run(commands);
 })();
