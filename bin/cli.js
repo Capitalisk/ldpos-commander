@@ -221,6 +221,18 @@ const cli = new REPLClient({
       },
     },
     transaction: {
+      create: {
+        multisigTransfer: {
+          execute: async () => await cli.actions.createMultisigTransfer(),
+          help: 'Transfers to a multisig wallet',
+        },
+      },
+      sign: {
+        multisigTransfer: {
+          execute: async () => await cli.actions.signMultisigTransfer(),
+          help: 'Transfers to a multisig wallet',
+        },
+      },
       post: {
         transfer: {
           execute: async () => await cli.actions.transfer(),
@@ -235,7 +247,7 @@ const cli = new REPLClient({
           help: 'Unvote a delegate',
         },
         multisigTransfer: {
-          execute: async () => await cli.actions.multisigTransfer(),
+          execute: async () => await cli.actions.postMultisigTransfer(),
           help: 'Transfers to a multisig wallet',
         },
         registerMultisigWallet: {
