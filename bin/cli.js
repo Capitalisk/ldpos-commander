@@ -11,7 +11,7 @@ const NETWORK_SYMBOLS = ['clsk'];
 
 const cli = new REPLClient({
   interactive: true,
-  helpFooter: 'CLI of Leasehold',
+  helpFooter: 'LDPoS Commander',
   helpHeader:
     'This interface can be used both interactively and non-interactively\nInteractively: ldpos\nNon-interactively: ldpos <OPTIONAL: ip or ip:port> <command>',
   exceptions: ['clean'],
@@ -110,8 +110,6 @@ const cli = new REPLClient({
       await client.connect({
         ...config.passphrases,
       });
-
-      console.log('All key indexes synced.');
     } catch (e) {
       cli.errorLog(
         "Can't connect to socket\nThis can be because of a bad passphrase"
@@ -120,6 +118,7 @@ const cli = new REPLClient({
 
     try {
       await client.syncAllKeyIndexes();
+      console.log('All key indexes synced.');
     } catch (e) {
       cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`);
     }
