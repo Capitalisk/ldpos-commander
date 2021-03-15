@@ -136,10 +136,10 @@ const cli = new REPLClient({
     }
   }
 
-  const customProperty = async function (param, address) {
+  const customProperty = async function (param, arg, fn = 'getAddress') {
     param = this.kebabCaseToCamel(param);
 
-    const data = await client.getAccount(address);
+    const data = await client[fn](arg);
 
     if (data[param] === undefined)
       throw new Error('Custom property not found.');
@@ -255,6 +255,57 @@ const cli = new REPLClient({
       },
     },
     transaction: {
+      get: {
+        '<custom-property>': {
+          help: 'Get a custom property on the transaction',
+        },
+        'type': {
+          help: 'Get the transaction type'
+        },
+        'fee': {
+          help: 'Get the transaction fee'
+        },
+        'timestamp': {
+          help: 'Get the transaction timestamp'
+        },
+        'message': {
+          help: 'Get the transaction message'
+        },
+        'sender-address': {
+          help: 'Get the transaction sender address'
+        },
+        'sig-public-key': {
+          help: 'Get the transaction sig public key'
+        },
+        'next-sig-public-key': {
+          help: 'Get the transaction next sig public key'
+        },
+        'next-sig-key-index': {
+          help: 'Get the transaction next sig key index'
+        },
+        'sender-signature-hash': {
+          help: 'Get the transaction sender signature hash'
+        },
+        'block-id': {
+          help: 'Get the transaction block id'
+        },
+        'index-in-block': {
+          help: 'Get the transaction index in block'
+        },
+        'new-sig-public-key': {
+          help: 'Get the transaction new sig public key'
+        },
+        'new-next-sig-public-key': {
+          help: 'Get the transaction new next sig public key'
+        },
+        'new-next-sig-key-index': {
+          help: 'Get the transaction new next sig key index'
+        },
+        execute: async function (param) {
+          const id = await cli.promptInput('Transaction ID:');
+          await customProperty.call(this, param, id, 'getTransaction');
+        },
+      },
       create: {
         multisigTransfer: {
           execute: async () => await cli.actions.createMultisigTransfer(),
@@ -349,6 +400,15 @@ const cli = new REPLClient({
       },
     },
     delegate: {
+      // get: {
+      //   '<custom-property>': {
+      //     help: 'Get a custom property on the delegate',
+      //   },
+      //   execute: async function (param) {
+      //     const address = await client.getWalletAddress();
+      //     await customProperty.call(this, param, address, 'get');
+      //   },
+      // },
       list: {
         forgingDelegates: {
           execute: async () => await cli.actions.listForgingDelegates(),
