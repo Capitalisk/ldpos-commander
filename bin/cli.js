@@ -4,8 +4,13 @@ const fs = require('fs-extra');
 const ldposClient = require('ldpos-client');
 const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
-const { FULL_CONFIG_PATH, SIGNATURE_PATH } = require('../lib/constants');
-const { _integerToDecimal } = require('../lib/utils');
+const {
+  FULL_CONFIG_PATH,
+  SIGNATURE_PATH,
+  CONFIG_PATH,
+  FULL_DIRECTORY_CONFIG,
+} = require('../lib/constants');
+const { _integerToDecimal, _checkDirectoryConfig } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
 
@@ -24,6 +29,13 @@ const cli = new REPLClient({
     networkSymbol: 'clsk',
   };
   let client;
+
+  // Create config path, this is used for signatures, ldpos-config.json and default path for multisig transactions
+  try {
+    await fs.mkdirp(CONFIG_PATH);
+  } catch (e) {
+    cli.errorLog('Failed to create config path', 1, true);
+  }
 
   // If command is an ip change config to that IP
   if (
@@ -195,21 +207,32 @@ const cli = new REPLClient({
       },
     },
     config: {
-      signatures: {
-        clean: {
-          execute: async () => {
-            await fs.emptyDir(SIGNATURE_PATH);
-            cli.successLog('Signatures cleaned.');
-          },
-          help: `Removes all signatures in the default path (${SIGNATURE_PATH})`,
-        },
-      },
       clean: {
-        execute: async () => {
-          await fs.remove(FULL_CONFIG_PATH);
-          cli.successLog('Config file removed.');
+        signatures: {
+          defaultPath: {
+            execute: async () => {
+              await fs.remove(FULL_DIRECTORY_CONFIG);
+              cli.successLog('Default path removed.');
+            },
+            help:
+              'Removes the default path (IMPORTANT: this action is irreversible)',
+          },
+          execute: async () => {
+            const signaturePath = await _checkDirectoryConfig(true);
+            await fs.emptyDir(signaturePath);
+            cli.successLog(`Signatures cleaned in ${signaturePath}`);
+          },
+          help:
+            'Removes all signatures in the default path (IMPORTANT: this action is irreversible)',
         },
-        help: 'Removes config file with server ip, port and networkSymbol',
+        config: {
+          execute: async () => {
+            await fs.remove(FULL_CONFIG_PATH);
+            cli.successLog('Config file removed.');
+          },
+          help:
+            'Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)',
+        },
       },
       networkSymbol: {
         current: {
