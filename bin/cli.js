@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const ldposClient = require('ldpos-client');
 const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
-const { FULL_CONFIG_PATH } = require('../lib/constants');
+const { FULL_CONFIG_PATH, SIGNATURE_PATH } = require('../lib/constants');
 const { _integerToDecimal } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
@@ -195,8 +195,20 @@ const cli = new REPLClient({
       },
     },
     config: {
+      signatures: {
+        clean: {
+          execute: async () => {
+            await fs.emptyDir(SIGNATURE_PATH);
+            cli.successLog('Signatures cleaned.');
+          },
+          help: `Removes all signatures in the default path (${SIGNATURE_PATH})`,
+        },
+      },
       clean: {
-        execute: async () => await fs.remove(FULL_CONFIG_PATH),
+        execute: async () => {
+          await fs.remove(FULL_CONFIG_PATH);
+          cli.successLog('Config file removed.');
+        },
         help: 'Removes config file with server ip, port and networkSymbol',
       },
       networkSymbol: {
