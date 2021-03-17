@@ -162,18 +162,25 @@ const cli = new REPLClient({
     if (cli.argv.hasOwnProperty('f')) delete cli.argv.f;
   }
 
-  const customProperty = async function (param, arg, fn = 'getAddress') {
+  /**
+   * Get a custom property or display the object returned
+   * @param {string} param Custom property that's searched in the object, if not present the object is displayed
+   * @param {any} arg Argument passed to the client's function
+   * @param {string} fn Function name to call in the client object
+   */
+  const customProperty = async function (param, arg, fn = 'getAccount') {
     param = this.kebabCaseToCamel(param);
 
     const data = await client[fn](arg);
 
-    if (data[param] === undefined)
-      throw new Error('Custom property not found.');
-
     let output;
 
-    if (!Number.isInteger(parseInt(data[param]))) output = data[param];
-    else output = _integerToDecimal(data[param]);
+    if (data[param]) {
+      if (!Number.isInteger(parseInt(data[param]))) output = data[param];
+      else output = _integerToDecimal(data[param]);
+    } else {
+      output = data;
+    }
 
     this.successLog(output, `${this.camelCaseToKebab(param)}:`);
   };
@@ -226,7 +233,8 @@ const cli = new REPLClient({
         '<custom-property>': {
           help: 'Get a custom property on the wallet',
         },
-        execute: async function (param) {
+        execute: async function (param = 'wallet') {
+          const err = Error('invalid');
           const address = await client.getWalletAddress();
           await customProperty.call(this, param, address);
         },
@@ -325,7 +333,7 @@ const cli = new REPLClient({
         'new-next-sig-key-index': {
           help: 'Get the transaction new next sig key index',
         },
-        execute: async function (param) {
+        execute: async function (param = 'transaction') {
           const id = await cli.promptInput('Transaction ID:');
           await customProperty.call(this, param, id, 'getTransaction');
         },
@@ -413,7 +421,7 @@ const cli = new REPLClient({
         '<custom-property>': {
           help: 'Get a custom property on the wallet',
         },
-        execute: async function (param) {
+        execute: async function (param = 'account') {
           const address = await this.promptInput('Wallet address:');
           await customProperty.call(this, param, address);
         },
@@ -428,7 +436,7 @@ const cli = new REPLClient({
       //   '<custom-property>': {
       //     help: 'Get a custom property on the delegate',
       //   },
-      //   execute: async function (param) {
+      //   execute: async function (param = 'delegate') {
       //     const address = await client.getWalletAddress();
       //     await customProperty.call(this, param, address, 'get');
       //   },
