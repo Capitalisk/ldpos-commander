@@ -10,7 +10,11 @@ const {
   CONFIG_PATH,
   FULL_DIRECTORY_CONFIG,
 } = require('../lib/constants');
-const { _integerToDecimal, _checkDirectoryConfig } = require('../lib/utils');
+const {
+  _integerToDecimal,
+  _checkDirectoryConfig,
+  _storePassphrase,
+} = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
 
@@ -27,6 +31,7 @@ const cli = new REPLClient({
   let config = {
     chainModuleName: 'capitalisk_chain',
     networkSymbol: 'clsk',
+    passphrases: {},
   };
   let client;
 
@@ -59,7 +64,20 @@ const cli = new REPLClient({
   ) {
     if (!config.hostname) {
       if (await fs.pathExists(FULL_CONFIG_PATH)) {
-        config = { ...config, ...require(FULL_CONFIG_PATH) };
+        const configFile = require(FULL_CONFIG_PATH);
+
+        // Decode passphrases
+        for (let i = 0; i < Object.keys(configFile.passphrases).length; i++) {
+          const type = Object.keys(configFile.passphrases)[i];
+          const passphrase = configFile.passphrases[type];
+
+          configFile.passphrases[type] = Buffer.from(
+            passphrase,
+            'base64'
+          ).toString();
+        }
+
+        config = { ...config, ...configFile };
       } else {
         // prettier-ignore
         config = {
@@ -83,32 +101,37 @@ const cli = new REPLClient({
       }
     }
 
-    // if (!config.networkSymbol) {
-    //   config.networkSymbol = await cli.promptList(
-    //     'Network symbol: (Default: clsk)',
-    //     NETWORK_SYMBOLS,
-    //     NETWORK_SYMBOLS[0]
-    //   );
-    // }
+    if (!config.passphrases.passphrase) {
+      // Get passphrase of the wallet
+      config.passphrases = {
+        passphrase: await cli.promptInput('Passphrase:', true),
+      };
 
-    // Get passphrase of the wallet
-    config.passphrases = {
-      passphrase: await cli.promptInput('Passphrase:', true),
-    };
+      await _storePassphrase('passphrase', config, cli);
+    }
 
-    if (cli.argv.hasOwnProperty('f')) {
+    if (cli.argv.hasOwnProperty('f') && !config.passphrases.forgingPassphrase) {
       config.passphrases = {
         ...config.passphrases,
         forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
       };
+
+      await _storePassphrase('forgingPassphrase', config, cli);
+
       delete cli.argv.f;
     }
 
-    if (cli.argv.hasOwnProperty('m')) {
+    if (
+      cli.argv.hasOwnProperty('m') &&
+      !config.passphrases.multisigPassphrase
+    ) {
       config.passphrases = {
         ...config.passphrases,
         multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
       };
+
+      await _storePassphrase('multisigPassphrase', config, cli);
+
       delete cli.argv.m;
     }
 
@@ -134,6 +157,9 @@ const cli = new REPLClient({
     } catch (e) {
       cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`);
     }
+
+    if (cli.argv.hasOwnProperty('m')) delete cli.argv.m;
+    if (cli.argv.hasOwnProperty('f')) delete cli.argv.f;
   }
 
   const customProperty = async function (param, arg, fn = 'getAddress') {
@@ -225,14 +251,12 @@ const cli = new REPLClient({
           help:
             'Removes all signatures in the default path (IMPORTANT: this action is irreversible)',
         },
-        config: {
-          execute: async () => {
-            await fs.remove(FULL_CONFIG_PATH);
-            cli.successLog('Config file removed.');
-          },
-          help:
-            'Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)',
+        execute: async () => {
+          await fs.remove(FULL_CONFIG_PATH);
+          cli.successLog('Config file removed.');
         },
+        help:
+          'Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)',
       },
       networkSymbol: {
         current: {
@@ -259,47 +283,47 @@ const cli = new REPLClient({
         '<custom-property>': {
           help: 'Get a custom property on the transaction',
         },
-        'type': {
-          help: 'Get the transaction type'
+        type: {
+          help: 'Get the transaction type',
         },
-        'fee': {
-          help: 'Get the transaction fee'
+        fee: {
+          help: 'Get the transaction fee',
         },
-        'timestamp': {
-          help: 'Get the transaction timestamp'
+        timestamp: {
+          help: 'Get the transaction timestamp',
         },
-        'message': {
-          help: 'Get the transaction message'
+        message: {
+          help: 'Get the transaction message',
         },
         'sender-address': {
-          help: 'Get the transaction sender address'
+          help: 'Get the transaction sender address',
         },
         'sig-public-key': {
-          help: 'Get the transaction sig public key'
+          help: 'Get the transaction sig public key',
         },
         'next-sig-public-key': {
-          help: 'Get the transaction next sig public key'
+          help: 'Get the transaction next sig public key',
         },
         'next-sig-key-index': {
-          help: 'Get the transaction next sig key index'
+          help: 'Get the transaction next sig key index',
         },
         'sender-signature-hash': {
-          help: 'Get the transaction sender signature hash'
+          help: 'Get the transaction sender signature hash',
         },
         'block-id': {
-          help: 'Get the transaction block id'
+          help: 'Get the transaction block id',
         },
         'index-in-block': {
-          help: 'Get the transaction index in block'
+          help: 'Get the transaction index in block',
         },
         'new-sig-public-key': {
-          help: 'Get the transaction new sig public key'
+          help: 'Get the transaction new sig public key',
         },
         'new-next-sig-public-key': {
-          help: 'Get the transaction new next sig public key'
+          help: 'Get the transaction new next sig public key',
         },
         'new-next-sig-key-index': {
-          help: 'Get the transaction new next sig key index'
+          help: 'Get the transaction new next sig key index',
         },
         execute: async function (param) {
           const id = await cli.promptInput('Transaction ID:');
