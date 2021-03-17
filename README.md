@@ -1,5 +1,6 @@
 # ldpos-commander
 CLI client for LDPoS blockchains
+EXAMPLE NODE: `34.227.22.98` PORT: `7001`
 
 ## Link the cli globally
 You will be able to use it as if it was a globally installed package
