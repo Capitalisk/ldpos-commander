@@ -6,7 +6,6 @@ const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
 const {
   FULL_CONFIG_PATH,
-  SIGNATURE_PATH,
   CONFIG_PATH,
   FULL_DIRECTORY_CONFIG,
 } = require('../lib/constants');
@@ -14,6 +13,7 @@ const {
   _integerToDecimal,
   _checkDirectoryConfig,
   _storePassphrase,
+  _saveConfig,
 } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
@@ -93,11 +93,7 @@ const cli = new REPLClient({
           await cli.promptInput(`Save in your home dir? (Y/n)`)
         );
 
-        if (save)
-          await fs.outputFile(
-            FULL_CONFIG_PATH,
-            JSON.stringify(config, null, 2)
-          );
+        if (save) await _saveConfig(config);
       }
     }
 
@@ -242,6 +238,15 @@ const cli = new REPLClient({
     },
     config: {
       clean: {
+        passphrases: {
+          execute: async () => {
+            delete require.cache[FULL_CONFIG_PATH];
+            const config = require(FULL_CONFIG_PATH);
+            delete config.passphrases;
+            await _saveConfig(config);
+          },
+          help: 'Removes the passphrase',
+        },
         signatures: {
           defaultPath: {
             execute: async () => {
