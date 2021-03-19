@@ -174,7 +174,11 @@ const cli = new REPLClient({
     let output;
 
     if (data[param]) {
-      if (!Number.isInteger(parseInt(data[param]))) output = data[param];
+      if (
+        !Number.isInteger(parseInt(data[param])) &&
+        !['fee', 'amount'].includes(param)
+      )
+        output = data[param];
       else output = _integerToDecimal(data[param]);
     } else {
       output = data;
@@ -440,6 +444,12 @@ const cli = new REPLClient({
     },
     delegate: {
       get: {
+        voteWeight: {
+          help: 'Get a delegates vote weight',
+        },
+        updateHeight: {
+          help: 'Get a delegates update height',
+        },
         '<custom-property>': {
           help: 'Get a custom property on the delegate',
         },
