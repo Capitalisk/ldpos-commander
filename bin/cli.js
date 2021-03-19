@@ -67,14 +67,16 @@ const cli = new REPLClient({
         const configFile = require(FULL_CONFIG_PATH);
 
         // Decode passphrases
-        for (let i = 0; i < Object.keys(configFile.passphrases).length; i++) {
-          const type = Object.keys(configFile.passphrases)[i];
-          const passphrase = configFile.passphrases[type];
+        if (configFile.passphrases) {
+          for (let i = 0; i < Object.keys(configFile.passphrases).length; i++) {
+            const type = Object.keys(configFile.passphrases)[i];
+            const passphrase = configFile.passphrases[type];
 
-          configFile.passphrases[type] = Buffer.from(
-            passphrase,
-            'base64'
-          ).toString();
+            configFile.passphrases[type] = Buffer.from(
+              passphrase,
+              'base64'
+            ).toString();
+          }
         }
 
         config = { ...config, ...configFile };
@@ -437,15 +439,16 @@ const cli = new REPLClient({
       },
     },
     delegate: {
-      // get: {
-      //   '<custom-property>': {
-      //     help: 'Get a custom property on the delegate',
-      //   },
-      //   execute: async function (param = 'delegate') {
-      //     const address = await client.getWalletAddress();
-      //     await customProperty.call(this, param, address, 'get');
-      //   },
-      // },
+      get: {
+        '<custom-property>': {
+          help: 'Get a custom property on the delegate',
+        },
+        execute: async function (param = 'delegate') {
+          const address = await cli.promptInput('Delegate address:');
+          if (!address) throw new Error('No address provided.');
+          await customProperty.call(this, param, address, 'getDelegate');
+        },
+      },
       list: {
         forgingDelegates: {
           execute: async () => await cli.actions.listForgingDelegates(),
