@@ -145,7 +145,10 @@ const cli = new REPLClient({
       });
     } catch (e) {
       cli.errorLog(
-        "Can't connect to socket\nThis can be because of a bad passphrase"
+        "Can't connect to socket\nThis can be because of a bad passphrase",
+        1,
+        false,
+        true
       );
     }
 
@@ -153,7 +156,7 @@ const cli = new REPLClient({
       await client.syncAllKeyIndexes();
       console.log('All key indexes synced.');
     } catch (e) {
-      cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`);
+      cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`, 1, false, true);
     }
 
     if (cli.argv.hasOwnProperty('m')) delete cli.argv.m;
@@ -246,7 +249,6 @@ const cli = new REPLClient({
       clean: {
         passphrases: {
           execute: async () => {
-            delete require.cache[FULL_CONFIG_PATH];
             const config = require(FULL_CONFIG_PATH);
             delete config.passphrases;
             await _saveConfig(config);
