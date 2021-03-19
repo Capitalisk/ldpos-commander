@@ -175,7 +175,7 @@ const cli = new REPLClient({
 
     if (data[param]) {
       if (
-        !Number.isInteger(parseInt(data[param])) &&
+        !Number.isInteger(parseInt(data[param])) ||
         !['fee', 'amount'].includes(param)
       )
         output = data[param];
