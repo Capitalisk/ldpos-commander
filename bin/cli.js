@@ -145,7 +145,7 @@ const cli = new REPLClient({
       });
     } catch (e) {
       cli.errorLog(
-        "Can't connect to socket\nThis can be because of a bad passphrase",
+        "Can't connect to node\nThis can be because of a bad passphrase",
         1,
         false,
         true
