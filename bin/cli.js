@@ -20,14 +20,25 @@ const NETWORK_SYMBOLS = ['clsk'];
 
 const cli = new REPLClient({
   interactive: true,
-  helpFooter: 'LDPoS Commander',
-  helpHeader: `This interface can be used both interactively and non-interactively
-    Interactively: ldpos
-    Non-interactively: ldpos <OPTIONAL: ip or ip:port> <command>\n
-    Accepted both interactively and non-interactively:
-      <-p: PASSPHRASE>
-      <-m: MULTISIGPASSPHRASE>
-      <-f: FORGINPASSPHRASE>
+  helpFooter:
+    '\n\x1b[1mLDPoS Commander created with CLI-Builder:\nhttps://github.com/maarteNNNN/cli-builder\x1b[0m',
+  helpHeader: `\x1b[1mThis interface can be used both interactively and non-interactively:
+
+Usage interactively: ldpos (OPTIONAL: -pmf)
+
+OR
+
+Usage non-interactively: ldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]
+ip:port - Default port is 7001. If not provided it will prompt you in the steps.
+eg.: ldpos 192.168.0.1 wallet get
+eg.: ldpos 192.168.0.1:7003 wallet get
+
+Options accepted both interactively and non-interactively:
+  (option -p) PASSPHRASE
+  (option -m) MULTISIGPASSPHRASE
+  (option -f) FORGINPASSPHRASE
+
+  \x1b[0m
   `,
   exceptions: ['clean'],
   actions,

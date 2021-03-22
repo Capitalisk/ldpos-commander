@@ -11,20 +11,21 @@ npm link
 
 ## Commands
 ```
-Usage: ldpos                                     To use the command line interactively
+This interface can be used both interactively and non-interactively:
+
+Usage interactively: ldpos (OPTIONAL: -pmf)
 
 OR
 
-Usage: ldpos (OPTIONAL: ip:port) [options] [command]
-<ip:port>: Default port is 7001. If not provided it will prompt you in the steps.
+Usage non-interactively: ldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]
+ip:port - Default port is 7001. If not provided it will prompt you in the steps.
 eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:7003 wallet get
 
-This interface can be used both interactively and non-interactively
-Interactively: ldpos
-Non-interactively: ldpos <-fm> <OPTIONAL: ip or ip:port> <command>
--f                                                                                                     Prompts forgingkey passphrase
--m                                                                                                     Prompts multisig passphrase
+Options accepted both interactively and non-interactively:
+  (option -p) PASSPHRASE
+  (option -m) MULTISIGPASSPHRASE
+  (option -f) FORGINPASSPHRASE
 
 exit                                                                                                   Exits the process
 v                                                                                                      No description available
@@ -37,9 +38,10 @@ wallet get forging-public-key                                                   
 wallet get multisig-public-key                                                                         Check your multisig public key
 wallet get address                                                                                     Get address of signed in wallet
 wallet get <custom-property>                                                                           Get a custom property on the wallet
+config clean passphrases                                                                               Removes the passphrase
 config clean signatures default-path                                                                   Removes the default path (IMPORTANT: this action is irreversible)
 config clean signatures                                                                                Removes all signatures in the default path (IMPORTANT: this action is irreversible)
-config clean config                                                                                    Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)
+config clean                                                                                           Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)
 config network-symbol current                                                                          Gets current networkSymbol
 config network-symbol change                                                                           Change the protocol
 transaction get <custom-property>                                                                      Get a custom property on the transaction
@@ -62,7 +64,7 @@ transaction sign multisig-transfer                                              
 transaction post transfer                                                                              Transfer to a wallet
 transaction post vote                                                                                  Vote a delegate
 transaction post unvote                                                                                Unvote a delegate
-transaction post multisig-transfer                                                                     Transfers to a multisig wallet
+transaction post multisig-transaction                                                                  Transfers to a multisig wallet
 transaction post register-multisig-wallet                                                              Register a multisigwallet
 transaction post register-multisig-details                                                             Register a registerMultisigDetails
 transaction post register-sig-details                                                                  Register a registerSigDetails
@@ -77,7 +79,9 @@ account get multisig-public-key                                                 
 account get forging-public-key                                                                         Get a multisig public key
 account get <custom-property>                                                                          Get a custom property on the wallet
 account generate                                                                                       Generates a new wallet
+delegate get vote-weight                                                                               Get a delegates vote weight
+delegate get update-height                                                                             Get a delegates update height
+delegate get <custom-property>                                                                         Get a custom property on the delegate
 delegate list forging-delegates                                                                        List forging deletes
 delegate list by-vote-weight                                                                           Delegates by weight in votes
-
 ```
