@@ -391,8 +391,8 @@ const cli = new REPLClient({
           execute: async () => await cli.actions.unvote(),
           help: 'Unvote a delegate',
         },
-        multisigTransfer: {
-          execute: async () => await cli.actions.postMultisigTransfer(),
+        multisigTransaction: {
+          execute: async () => await cli.actions.postMultisigTransaction(),
           help: 'Transfers to a multisig wallet',
         },
         registerMultisigWallet: {
