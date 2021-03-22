@@ -22,13 +22,13 @@ const cli = new REPLClient({
   interactive: true,
   helpFooter:
     '\n\x1b[1mLDPoS Commander created with CLI-Builder:\nhttps://github.com/maarteNNNN/cli-builder\x1b[0m',
-  helpHeader: `\x1b[1mThis interface can be used both interactively and non-interactively:
+  helpHeader: `This interface can be used both interactively and non-interactively:
 
-Usage interactively: ldpos (OPTIONAL: -pmf)
+Usage interactively: \x1b[1mldpos (OPTIONAL: -pmf)\x1b[0m
 
 OR
 
-Usage non-interactively: ldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]
+Usage non-interactively: \x1b[1mldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]\x1b[0m
 ip:port - Default port is 7001. If not provided it will prompt you in the steps.
 eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:7003 wallet get
@@ -37,8 +37,6 @@ Options accepted both interactively and non-interactively:
   (option -p) PASSPHRASE
   (option -m) MULTISIGPASSPHRASE
   (option -f) FORGINPASSPHRASE
-
-  \x1b[0m
   `,
   exceptions: ['clean'],
   actions,
