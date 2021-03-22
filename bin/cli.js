@@ -21,8 +21,14 @@ const NETWORK_SYMBOLS = ['clsk'];
 const cli = new REPLClient({
   interactive: true,
   helpFooter: 'LDPoS Commander',
-  helpHeader:
-    'This interface can be used both interactively and non-interactively\nInteractively: ldpos\nNon-interactively: ldpos <OPTIONAL: ip or ip:port> <command>',
+  helpHeader: `This interface can be used both interactively and non-interactively
+    Interactively: ldpos
+    Non-interactively: ldpos <OPTIONAL: ip or ip:port> <command>\n
+    Accepted both interactively and non-interactively:
+      <-p: PASSPHRASE>
+      <-m: MULTISIGPASSPHRASE>
+      <-f: FORGINPASSPHRASE>
+  `,
   exceptions: ['clean'],
   actions,
 });
@@ -72,10 +78,9 @@ const cli = new REPLClient({
             const type = Object.keys(configFile.passphrases)[i];
             const passphrase = configFile.passphrases[type];
 
-            configFile.passphrases[type] = Buffer.from(
-              passphrase,
-              'base64'
-            ).toString();
+            configFile.passphrases[type] = passphrase
+              ? Buffer.from(passphrase, 'base64').toString()
+              : null;
           }
         }
 
@@ -99,36 +104,45 @@ const cli = new REPLClient({
       }
     }
 
-    if (!config.passphrases.passphrase) {
+    if (cli.argv.hasOwnProperty('p')) {
+      config.passphrases.passphrase = await cli.promptInput(
+        'Passphrase:',
+        true
+      );
+
+      delete cli.argv.p;
+    } else if (!config.passphrases.hasOwnProperty('passphrase')) {
       // Get passphrase of the wallet
+      config.passphrases.passphrase = await cli.promptInput(
+        'Passphrase:',
+        true
+      );
+
+      await _storePassphrase(
+        'passphrase',
+        config,
+        cli,
+        config.passphrases.passphrase
+      );
+    } else if (!config.passphrases.passphrase)
       config.passphrases = {
-        passphrase: await cli.promptInput('Passphrase:', true),
+        passphrase: await cli.promptInput('Passphrase: ', true),
       };
 
-      await _storePassphrase('passphrase', config, cli);
-    }
-
-    if (cli.argv.hasOwnProperty('f') && !config.passphrases.forgingPassphrase) {
+    if (cli.argv.hasOwnProperty('f')) {
       config.passphrases = {
         ...config.passphrases,
         forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
       };
 
-      await _storePassphrase('forgingPassphrase', config, cli);
-
       delete cli.argv.f;
     }
 
-    if (
-      cli.argv.hasOwnProperty('m') &&
-      !config.passphrases.multisigPassphrase
-    ) {
+    if (cli.argv.hasOwnProperty('m')) {
       config.passphrases = {
         ...config.passphrases,
         multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
       };
-
-      await _storePassphrase('multisigPassphrase', config, cli);
 
       delete cli.argv.m;
     }
@@ -159,6 +173,7 @@ const cli = new REPLClient({
       cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`, 1, false, true);
     }
 
+    if (cli.argv.hasOwnProperty('m')) delete cli.argv.p;
     if (cli.argv.hasOwnProperty('m')) delete cli.argv.m;
     if (cli.argv.hasOwnProperty('f')) delete cli.argv.f;
   }
