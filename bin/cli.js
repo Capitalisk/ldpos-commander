@@ -50,7 +50,7 @@ Options accepted both interactively and non-interactively:
   };
   let client;
 
-  const readOnly = !cli.argv._.join(' ').match(/(create|sign|post)/gm);
+  const readOnly = !(cli.argv._.join(' ').match(/(create|sign|post)/gm) || cli.argv._[0] === 'wallet');
 
   // Create config path, this is used for signatures, ldpos-config.json and default path for multisig transactions
   try {
@@ -252,6 +252,10 @@ Options accepted both interactively and non-interactively:
           execute: async () => await cli.actions.transactions(),
           help: 'Check your transactions',
         },
+        pendingTransactions: {
+          execute: async () => await cli.actions.listPendingOutboundTransactions(),
+          help: 'Check your pending outbound transactions'
+        },
         votes: {
           execute: async () => await cli.actions.votes(),
           help: 'Check your votes',
@@ -277,7 +281,6 @@ Options accepted both interactively and non-interactively:
           help: 'Get a custom property on the wallet',
         },
         execute: async function (param = 'wallet') {
-          const err = Error('invalid');
           const address = await client.getWalletAddress();
           await customProperty.call(this, param, address);
         },
