@@ -50,6 +50,8 @@ Options accepted both interactively and non-interactively:
   };
   let client;
 
+  const readOnly = !cli.argv._.join(' ').match(/(create|sign|post)/gm);
+
   // Create config path, this is used for signatures, ldpos-config.json and default path for multisig transactions
   try {
     await fs.mkdirp(CONFIG_PATH);
@@ -120,7 +122,10 @@ Options accepted both interactively and non-interactively:
       );
 
       delete cli.argv.p;
-    } else if (!config.passphrases.hasOwnProperty('passphrase')) {
+    } else if (
+      !config.passphrases.hasOwnProperty('passphrase') &&
+      (!readOnly || cli.options.interactive)
+    ) {
       // Get passphrase of the wallet
       config.passphrases.passphrase = await cli.promptInput(
         'Passphrase:',
@@ -133,7 +138,10 @@ Options accepted both interactively and non-interactively:
         cli,
         config.passphrases.passphrase
       );
-    } else if (!config.passphrases.passphrase)
+    } else if (
+      !config.passphrases.passphrase &&
+      (!readOnly || cli.options.interactive)
+    )
       config.passphrases = {
         passphrase: await cli.promptInput('Passphrase: ', true),
       };
@@ -174,12 +182,18 @@ Options accepted both interactively and non-interactively:
         true
       );
     }
-
-    try {
-      await client.syncAllKeyIndexes();
-      console.log('All key indexes synced.');
-    } catch (e) {
-      cli.errorLog(`Failed to syncAllKeyIndexes: ${e.message}`, 1, false, true);
+    if (!readOnly || cli.options.interactive) {
+      try {
+        await client.syncAllKeyIndexes();
+        console.log('All key indexes synced.');
+      } catch (e) {
+        cli.errorLog(
+          `Failed to syncAllKeyIndexes: ${e.message}`,
+          1,
+          false,
+          true
+        );
+      }
     }
 
     if (cli.argv.hasOwnProperty('m')) delete cli.argv.p;
