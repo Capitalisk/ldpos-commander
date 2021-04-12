@@ -10,7 +10,6 @@ const {
   FULL_DIRECTORY_CONFIG,
 } = require('../lib/constants');
 const {
-  _integerToDecimal,
   _checkDirectoryConfig,
   _storePassphrase,
   _saveConfig,
@@ -49,6 +48,7 @@ Options accepted both interactively and non-interactively:
     passphrases: {},
   };
   let client;
+  let authenticated = false;
 
   const readOnly = !(
     cli.argv._.join(' ').match(/(create|sign|post)/gm) ||
@@ -125,10 +125,7 @@ Options accepted both interactively and non-interactively:
       );
 
       delete cli.argv.p;
-    } else if (
-      !config.passphrases.hasOwnProperty('passphrase') &&
-      (!readOnly || cli.options.interactive)
-    ) {
+    } else if (!config.passphrases.hasOwnProperty('passphrase') && !readOnly) {
       // Get passphrase of the wallet
       config.passphrases.passphrase = await cli.promptInput(
         'Passphrase:',
@@ -141,10 +138,7 @@ Options accepted both interactively and non-interactively:
         cli,
         config.passphrases.passphrase
       );
-    } else if (
-      !config.passphrases.passphrase &&
-      (!readOnly || cli.options.interactive)
-    )
+    } else if (!config.passphrases.passphrase && !readOnly)
       config.passphrases = {
         passphrase: await cli.promptInput('Passphrase: ', true),
       };
@@ -177,15 +171,16 @@ Options accepted both interactively and non-interactively:
       await client.connect({
         ...config.passphrases,
       });
+      authenticated = true;
     } catch (e) {
       cli.errorLog(
         "Can't connect to node\nThis can be because of a bad passphrase",
         1,
-        false,
-        true
+        cli.options.interactive,
+        !cli.options.interactive
       );
     }
-    if (!readOnly || cli.options.interactive) {
+    if (!readOnly) {
       try {
         await client.syncAllKeyIndexes();
         console.log('All key indexes synced.');
@@ -225,6 +220,10 @@ Options accepted both interactively and non-interactively:
   };
 
   const commands = {
+    login: {
+      help: 'Login with a passphrase. Intented for interactive mode only',
+      execute: async () => await cli.actions.login(),
+    },
     exit: {
       execute: () => cli.exit(0, true),
       help: 'Exits the process',
