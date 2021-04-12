@@ -48,7 +48,6 @@ Options accepted both interactively and non-interactively:
     passphrases: {},
   };
   let client;
-  let authenticated = false;
 
   const readOnly = !(
     cli.argv._.join(' ').match(/(create|sign|post)/gm) ||
@@ -171,7 +170,6 @@ Options accepted both interactively and non-interactively:
       await client.connect({
         ...config.passphrases,
       });
-      authenticated = true;
     } catch (e) {
       cli.errorLog(
         "Can't connect to node\nThis can be because of a bad passphrase",
@@ -194,7 +192,7 @@ Options accepted both interactively and non-interactively:
       }
     }
 
-    if (cli.argv.hasOwnProperty('m')) delete cli.argv.p;
+    if (cli.argv.hasOwnProperty('p')) delete cli.argv.p;
     if (cli.argv.hasOwnProperty('m')) delete cli.argv.m;
     if (cli.argv.hasOwnProperty('f')) delete cli.argv.f;
   }
@@ -222,7 +220,19 @@ Options accepted both interactively and non-interactively:
   const commands = {
     login: {
       help: 'Login with a passphrase. Intented for interactive mode only',
-      execute: async () => await cli.actions.login(),
+      execute: async () => {
+        const passphrase = await cli.promptInput('Passphrase:', true);
+
+        if (!passphrase) throw new Error('No passphrase provided.');
+
+        try {
+          await client.connect({
+            passphrase,
+          });
+        } catch (e) {
+          cli.errorLog(e.message);
+        }
+      },
     },
     exit: {
       execute: () => cli.exit(0, true),
@@ -234,14 +244,25 @@ Options accepted both interactively and non-interactively:
       cli.successLog(`Version: ${require('../package.json').version}`),
     wallet: {
       list: {
-        transactions: {
-          execute: async () => await cli.actions.transactions(),
-          help: 'Check your transactions',
+        outboundTransactions: {
+          execute: async () => await cli.actions.outboundTransactions(),
+          help: 'Check your outbound transactions',
+        },
+        inboundTransactions: {
+          execute: async () => await cli.actions.outboundTransactions(),
+          help: 'Check your outbound transactions',
         },
         pendingTransactions: {
-          execute: async () =>
-            await cli.actions.listPendingOutboundTransactions(),
-          help: 'Check your pending outbound transactions',
+          inbound: {
+            execute: async () =>
+              await cli.actions.listPendingOutboundTransactions(),
+            help: 'Check your pending outbound transactions',
+          },
+          outbound: {
+            execute: async () =>
+              await cli.actions.listPendingInboundTransactions(),
+            help: 'Check your pending inbound transactions',
+          },
         },
         votes: {
           execute: async () => await cli.actions.votes(),
@@ -388,7 +409,7 @@ Options accepted both interactively and non-interactively:
       },
       get: {
         help:
-          'Get a account, accepts an address as argument. If not provided it prompts it.',
+          'Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.',
         execute: async function (address = null) {
           if (!address) address = await this.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
@@ -403,7 +424,7 @@ Options accepted both interactively and non-interactively:
     delegate: {
       get: {
         help:
-          'Gets a delegate, accepts an address as argument. If not provided it prompts it.',
+          'Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.',
         execute: async function (address = null) {
           if (!address) address = await this.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
