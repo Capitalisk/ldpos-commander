@@ -50,7 +50,10 @@ Options accepted both interactively and non-interactively:
   };
   let client;
 
-  const readOnly = !(cli.argv._.join(' ').match(/(create|sign|post)/gm) || cli.argv._[0] === 'wallet');
+  const readOnly = !(
+    cli.argv._.join(' ').match(/(create|sign|post)/gm) ||
+    cli.argv._[0] === 'wallet'
+  );
 
   // Create config path, this is used for signatures, ldpos-config.json and default path for multisig transactions
   try {
@@ -203,29 +206,13 @@ Options accepted both interactively and non-interactively:
 
   /**
    * Get a custom property or display the object returned
-   * @param {string} param Custom property that's searched in the object, if not present the object is displayed
    * @param {any} arg Argument passed to the client's function
    * @param {string} fn Function name to call in the client object
    */
-  const customProperty = async function (param, arg, fn = 'getAccount') {
-    param = this.kebabCaseToCamel(param);
-
+  const getObject = async function (arg, fn, title) {
     const data = await client[fn](arg);
 
-    let output;
-
-    if (data[param]) {
-      if (
-        !Number.isInteger(parseInt(data[param])) ||
-        !['fee', 'amount'].includes(param)
-      )
-        output = data[param];
-      else output = _integerToDecimal(data[param]);
-    } else {
-      output = data;
-    }
-
-    this.successLog(output, `${this.camelCaseToKebab(param)}:`);
+    this.successLog(data, `${title}`);
   };
 
   const ldposAction = async (clientKey, message, arg = null) => {
@@ -253,8 +240,9 @@ Options accepted both interactively and non-interactively:
           help: 'Check your transactions',
         },
         pendingTransactions: {
-          execute: async () => await cli.actions.listPendingOutboundTransactions(),
-          help: 'Check your pending outbound transactions'
+          execute: async () =>
+            await cli.actions.listPendingOutboundTransactions(),
+          help: 'Check your pending outbound transactions',
         },
         votes: {
           execute: async () => await cli.actions.votes(),
@@ -262,27 +250,12 @@ Options accepted both interactively and non-interactively:
         },
       },
       get: {
-        balance: {
-          help: 'Check your balance',
-        },
-        sigPublicKey: {
-          help: 'Check your public key',
-        },
-        forgingPublicKey: {
-          help: 'Check your forging public key',
-        },
-        multisigPublicKey: {
-          help: 'Check your multisig public key',
-        },
-        address: {
-          help: 'Get address of signed in wallet',
-        },
-        '<custom-property>': {
-          help: 'Get a custom property on the wallet',
-        },
-        execute: async function (param = 'wallet') {
+        help: 'Check your account',
+        execute: async function () {
           const address = await client.getWalletAddress();
-          await customProperty.call(this, param, address);
+          if (!address) throw new Error('No address provided');
+
+          await getObject.call(this, address, 'getAccount', 'Wallet');
         },
       },
     },
@@ -342,54 +315,12 @@ Options accepted both interactively and non-interactively:
     },
     transaction: {
       get: {
-        '<custom-property>': {
-          help: 'Get a custom property on the transaction',
-        },
-        type: {
-          help: 'Get the transaction type',
-        },
-        fee: {
-          help: 'Get the transaction fee',
-        },
-        timestamp: {
-          help: 'Get the transaction timestamp',
-        },
-        message: {
-          help: 'Get the transaction message',
-        },
-        'sender-address': {
-          help: 'Get the transaction sender address',
-        },
-        'sig-public-key': {
-          help: 'Get the transaction sig public key',
-        },
-        'next-sig-public-key': {
-          help: 'Get the transaction next sig public key',
-        },
-        'next-sig-key-index': {
-          help: 'Get the transaction next sig key index',
-        },
-        'sender-signature-hash': {
-          help: 'Get the transaction sender signature hash',
-        },
-        'block-id': {
-          help: 'Get the transaction block id',
-        },
-        'index-in-block': {
-          help: 'Get the transaction index in block',
-        },
-        'new-sig-public-key': {
-          help: 'Get the transaction new sig public key',
-        },
-        'new-next-sig-public-key': {
-          help: 'Get the transaction new next sig public key',
-        },
-        'new-next-sig-key-index': {
-          help: 'Get the transaction new next sig key index',
-        },
-        execute: async function (param = 'transaction') {
-          const id = await cli.promptInput('Transaction ID:');
-          await customProperty.call(this, param, id, 'getTransaction');
+        help:
+          'Get a transaction, accepts an id as argument. If not provided it prompts it.',
+        execute: async function (id = null) {
+          if (!id) id = await cli.promptInput('Transaction ID:');
+          if (!id) throw new Error('No transaction id provided.');
+          await getObject.call(this, id, 'getTransaction', 'Transaction');
         },
       },
       create: {
@@ -457,27 +388,12 @@ Options accepted both interactively and non-interactively:
         },
       },
       get: {
-        balance: {
-          help: 'Get balance of prompted wallet',
-        },
-        wallet: {
-          help: 'Get wallet',
-        },
-        sigPublicKey: {
-          help: 'Get a sig public key',
-        },
-        multisigPublicKey: {
-          help: 'Get a multisig public key',
-        },
-        forgingPublicKey: {
-          help: 'Get a multisig public key',
-        },
-        '<custom-property>': {
-          help: 'Get a custom property on the wallet',
-        },
-        execute: async function (param = 'account') {
-          const address = await this.promptInput('Wallet address:');
-          await customProperty.call(this, param, address);
+        help:
+          'Get a account, accepts an address as argument. If not provided it prompts it.',
+        execute: async function (address = null) {
+          if (!address) address = await this.promptInput('Wallet address:');
+          if (!address) throw new Error('No address provided.');
+          await getObject.call(this, address, 'getAccount', 'Account');
         },
       },
       generate: {
@@ -487,19 +403,12 @@ Options accepted both interactively and non-interactively:
     },
     delegate: {
       get: {
-        voteWeight: {
-          help: 'Get a delegates vote weight',
-        },
-        updateHeight: {
-          help: 'Get a delegates update height',
-        },
-        '<custom-property>': {
-          help: 'Get a custom property on the delegate',
-        },
-        execute: async function (param = 'delegate') {
-          const address = await cli.promptInput('Delegate address:');
+        help:
+          'Gets a delegate, accepts an address as argument. If not provided it prompts it.',
+        execute: async function (address = null) {
+          if (!address) address = await this.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
-          await customProperty.call(this, param, address, 'getDelegate');
+          await getObject.call(this, address, 'getDelegate', 'Delegate');
         },
       },
       list: {
