@@ -27,38 +27,23 @@ Options accepted both interactively and non-interactively:
   (option -m) MULTISIGPASSPHRASE
   (option -f) FORGINPASSPHRASE
 
+login                                                                                                  Login with a passphrase. Intented for interactive mode only
 exit                                                                                                   Exits the process
 v                                                                                                      No description available
 version                                                                                                No description available
-wallet list transactions                                                                               Check your transactions
+wallet list outbound-transactions                                                                      Check your outbound transactions
+wallet list inbound-transactions                                                                       Check your outbound transactions
+wallet list pending-transactions inbound                                                               Check your pending outbound transactions
+wallet list pending-transactions outbound                                                              Check your pending inbound transactions
 wallet list votes                                                                                      Check your votes
-wallet get balance                                                                                     Check your balance
-wallet get sig-public-key                                                                              Check your public key
-wallet get forging-public-key                                                                          Check your forging public key
-wallet get multisig-public-key                                                                         Check your multisig public key
-wallet get address                                                                                     Get address of signed in wallet
-wallet get <custom-property>                                                                           Get a custom property on the wallet
+wallet get                                                                                             Check your account
 config clean passphrases                                                                               Removes the passphrase
 config clean signatures default-path                                                                   Removes the default path (IMPORTANT: this action is irreversible)
 config clean signatures                                                                                Removes all signatures in the default path (IMPORTANT: this action is irreversible)
 config clean                                                                                           Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)
 config network-symbol current                                                                          Gets current networkSymbol
 config network-symbol change                                                                           Change the protocol
-transaction get <custom-property>                                                                      Get a custom property on the transaction
-transaction get type                                                                                   Get the transaction type
-transaction get fee                                                                                    Get the transaction fee
-transaction get timestamp                                                                              Get the transaction timestamp
-transaction get message                                                                                Get the transaction message
-transaction get sender-address                                                                         Get the transaction sender address
-transaction get sig-public-key                                                                         Get the transaction sig public key
-transaction get next-sig-public-key                                                                    Get the transaction next sig public key
-transaction get next-sig-key-index                                                                     Get the transaction next sig key index
-transaction get sender-signature-hash                                                                  Get the transaction sender signature hash
-transaction get block-id                                                                               Get the transaction block id
-transaction get index-in-block                                                                         Get the transaction index in block
-transaction get new-sig-public-key                                                                     Get the transaction new sig public key
-transaction get new-next-sig-public-key                                                                Get the transaction new next sig public key
-transaction get new-next-sig-key-index                                                                 Get the transaction new next sig key index
+transaction get                                                                                        Get a transaction, accepts an id as argument. If not provided it prompts it.
 transaction create multisig-transfer                                                                   Transfers to a multisig wallet
 transaction sign multisig-transfer                                                                     Transfers to a multisig wallet
 transaction post transfer                                                                              Transfer to a wallet
@@ -72,16 +57,9 @@ transaction post register-forging-details                                       
 transaction count pending                                                                              List pending transactions
 account list by-balance                                                                                List accounts
 account list multisig-wallet-members                                                                   Get wallet members
-account get balance                                                                                    Get balance of prompted wallet
-account get wallet                                                                                     Get wallet
-account get sig-public-key                                                                             Get a sig public key
-account get multisig-public-key                                                                        Get a multisig public key
-account get forging-public-key                                                                         Get a multisig public key
-account get <custom-property>                                                                          Get a custom property on the wallet
+account get                                                                                            Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.
 account generate                                                                                       Generates a new wallet
-delegate get vote-weight                                                                               Get a delegates vote weight
-delegate get update-height                                                                             Get a delegates update height
-delegate get <custom-property>                                                                         Get a custom property on the delegate
+delegate get                                                                                           Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.
 delegate list forging-delegates                                                                        List forging deletes
 delegate list by-vote-weight                                                                           Delegates by weight in votes
 ```
