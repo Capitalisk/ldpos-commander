@@ -254,8 +254,8 @@ Options accepted both interactively and non-interactively:
           help: 'Check your outbound transactions',
         },
         inboundTransactions: {
-          execute: async () => await cli.actions.outboundTransactions(),
-          help: 'Check your outbound transactions',
+          execute: async () => await cli.actions.inboundTransactions(),
+          help: 'Check your inbound transactions',
         },
         pendingTransactions: {
           inbound: {
@@ -347,6 +347,10 @@ Options accepted both interactively and non-interactively:
       },
     },
     transaction: {
+      list: {
+        help: 'Get a list of all transactions on the chain by timestamp',
+        execute: async () => await cli.actions.listTransactions(),
+      },
       get: {
         help:
           'Get a transaction, accepts an id as argument. If not provided it prompts it.',
