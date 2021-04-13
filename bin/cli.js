@@ -249,14 +249,14 @@ Options accepted both interactively and non-interactively:
       cli.successLog(`Version: ${require('../package.json').version}`),
     wallet: {
       list: {
-        outboundTransactions: {
-          execute: async () => await cli.actions.outboundTransactions(),
-          help: 'Check your outbound transactions',
-        },
-        inboundTransactions: {
-          execute: async () => await cli.actions.inboundTransactions(),
-          help: 'Check your inbound transactions',
-        },
+        // outboundTransactions: {
+        //   execute: async () => await cli.actions.outboundTransactions(),
+        //   help: 'Check your outbound transactions',
+        // },
+        // inboundTransactions: {
+        //   execute: async () => await cli.actions.inboundTransactions(),
+        //   help: 'Check your inbound transactions',
+        // },
         pendingTransactions: {
           inbound: {
             execute: async () =>
@@ -415,6 +415,30 @@ Options accepted both interactively and non-interactively:
     },
     account: {
       list: {
+        // outboundTransactions: {
+        //   execute: async () => await cli.actions.outboundTransactions(),
+        //   help: 'Check the outbound transactions of a wallet address',
+        // },
+        // inboundTransactions: {
+        //   execute: async () => await cli.actions.inboundTransactions(),
+        //   help: 'Check the inbound transactions of a wallet address',
+        // },
+        pendingTransactions: {
+          inbound: {
+            execute: async () =>
+              await cli.actions.listPendingOutboundTransactions(),
+            help: 'Check the pending outbound transactions of a wallet address',
+          },
+          outbound: {
+            execute: async () =>
+              await cli.actions.listPendingInboundTransactions(),
+            help: 'Check the pending inbound transactions of a wallet address',
+          },
+        },
+        votes: {
+          execute: async () => await cli.actions.votes(),
+          help: 'Check the votes of a wallet address',
+        },
         byBalance: {
           execute: async () => await cli.actions.listAccountsByBalance(),
           help: 'List accounts',
