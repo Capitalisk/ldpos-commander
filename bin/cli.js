@@ -13,6 +13,7 @@ const {
   _checkDirectoryConfig,
   _storePassphrase,
   _saveConfig,
+  _integerToDecimal,
 } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
@@ -205,6 +206,10 @@ Options accepted both interactively and non-interactively:
   const getObject = async function (arg, fn, title) {
     const data = await client[fn](arg);
 
+    if (data.balance) data.balance = _integerToDecimal(data.balance);
+    if (data.amount) data.amount = _integerToDecimal(data.amount);
+    if (data.fee) data.fee = _integerToDecimal(data.fee);
+
     this.successLog(data, `${title}`);
   };
 
@@ -270,6 +275,14 @@ Options accepted both interactively and non-interactively:
         },
       },
       get: {
+        balance: {
+          help: 'Get the balance of your wallet',
+          execute: async () => {
+            const address = await client.getWalletAddress();
+            const { balance } = await client.getAccount(address);
+            cli.successLog(_integerToDecimal(balance), 'balance');
+          },
+        },
         help: 'Check your account',
         execute: async function () {
           const address = await client.getWalletAddress();
@@ -408,12 +421,21 @@ Options accepted both interactively and non-interactively:
         },
       },
       get: {
+        balance: {
+          help: 'Get the balance of an account',
+          execute: async (address = null) => {
+            if (!address) address = await cli.promptInput('Wallet address:');
+            if (!address) throw new Error('No address provided.');
+            const { balance } = await client.getAccount(address);
+            cli.successLog(_integerToDecimal(balance), 'balance');
+          },
+        },
         help:
           'Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.',
         execute: async function (address = null) {
-          if (!address) address = await this.promptInput('Wallet address:');
+          if (!address) address = await cli.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
-          await getObject.call(this, address, 'getAccount', 'Account');
+          await getObject.call(cli, address, 'getAccount', 'Account');
         },
       },
       generate: {

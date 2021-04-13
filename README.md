@@ -1,15 +1,19 @@
 # ldpos-commander
+
 CLI client for LDPoS blockchains
 EXAMPLE NODE: `34.227.22.98` PORT: `7001`
 
 ## Link the cli globally
+
 You will be able to use it as if it was a globally installed package
+
 ```js
 npm i
 npm link
 ```
 
 ## Commands
+
 ```
 This interface can be used both interactively and non-interactively:
 
@@ -36,6 +40,7 @@ wallet list inbound-transactions                                                
 wallet list pending-transactions inbound                                                               Check your pending outbound transactions
 wallet list pending-transactions outbound                                                              Check your pending inbound transactions
 wallet list votes                                                                                      Check your votes
+wallet get balance                                                                                     Get the balance of your wallet
 wallet get                                                                                             Check your account
 config clean passphrases                                                                               Removes the passphrase
 config clean signatures default-path                                                                   Removes the default path (IMPORTANT: this action is irreversible)
@@ -57,6 +62,7 @@ transaction post register-forging-details                                       
 transaction count pending                                                                              List pending transactions
 account list by-balance                                                                                List accounts
 account list multisig-wallet-members                                                                   Get wallet members
+account get balance                                                                                    Get the balance of an account
 account get                                                                                            Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.
 account generate                                                                                       Generates a new wallet
 delegate get                                                                                           Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.
