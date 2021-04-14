@@ -258,15 +258,10 @@ Options accepted both interactively and non-interactively:
           help: 'Check your inbound transactions',
         },
         pendingTransactions: {
-          inbound: {
+          outbound: {
             execute: async () =>
               await cli.actions.listPendingOutboundTransactions(),
             help: 'Check your pending outbound transactions',
-          },
-          outbound: {
-            execute: async () =>
-              await cli.actions.listPendingInboundTransactions(),
-            help: 'Check your pending inbound transactions',
           },
         },
         votes: {
@@ -424,15 +419,10 @@ Options accepted both interactively and non-interactively:
           help: 'Check the inbound transactions of a wallet address',
         },
         pendingTransactions: {
-          inbound: {
+          outbound: {
             execute: async () =>
               await cli.actions.listPendingOutboundTransactions(),
             help: 'Check the pending outbound transactions of a wallet address',
-          },
-          outbound: {
-            execute: async () =>
-              await cli.actions.listPendingInboundTransactions(),
-            help: 'Check the pending inbound transactions of a wallet address',
           },
         },
         votes: {
