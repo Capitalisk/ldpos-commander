@@ -249,14 +249,14 @@ Options accepted both interactively and non-interactively:
       cli.successLog(`Version: ${require('../package.json').version}`),
     wallet: {
       list: {
-        // outboundTransactions: {
-        //   execute: async () => await cli.actions.outboundTransactions(),
-        //   help: 'Check your outbound transactions',
-        // },
-        // inboundTransactions: {
-        //   execute: async () => await cli.actions.inboundTransactions(),
-        //   help: 'Check your inbound transactions',
-        // },
+        outboundTransactions: {
+          execute: async () => await cli.actions.listOutboundTransactions(),
+          help: 'Check your outbound transactions',
+        },
+        inboundTransactions: {
+          execute: async () => await cli.actions.listInboundTransactions(),
+          help: 'Check your inbound transactions',
+        },
         pendingTransactions: {
           inbound: {
             execute: async () =>
@@ -415,14 +415,14 @@ Options accepted both interactively and non-interactively:
     },
     account: {
       list: {
-        // outboundTransactions: {
-        //   execute: async () => await cli.actions.outboundTransactions(),
-        //   help: 'Check the outbound transactions of a wallet address',
-        // },
-        // inboundTransactions: {
-        //   execute: async () => await cli.actions.inboundTransactions(),
-        //   help: 'Check the inbound transactions of a wallet address',
-        // },
+        outboundTransactions: {
+          execute: async () => await cli.actions.listOutboundTransactions(),
+          help: 'Check the outbound transactions of a wallet address',
+        },
+        inboundTransactions: {
+          execute: async () => await cli.actions.listInboundTransactions(),
+          help: 'Check the inbound transactions of a wallet address',
+        },
         pendingTransactions: {
           inbound: {
             execute: async () =>
