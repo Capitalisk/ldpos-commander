@@ -36,7 +36,7 @@ eg.: ldpos 192.168.0.1:7003 wallet get
 Options accepted both interactively and non-interactively:
   (option -p) PASSPHRASE
   (option -m) MULTISIGPASSPHRASE
-  (option -f) FORGINPASSPHRASE
+  (option -f) FORGINGPASSPHRASE
   `,
   exceptions: ['clean'],
   actions,

@@ -29,16 +29,15 @@ eg.: ldpos 192.168.0.1:7003 wallet get
 Options accepted both interactively and non-interactively:
   (option -p) PASSPHRASE
   (option -m) MULTISIGPASSPHRASE
-  (option -f) FORGINPASSPHRASE
+  (option -f) FORGINGPASSPHRASE
 
 login                                                                                                  Login with a passphrase. Intented for interactive mode only
 exit                                                                                                   Exits the process
 v                                                                                                      No description available
 version                                                                                                No description available
 wallet list outbound-transactions                                                                      Check your outbound transactions
-wallet list inbound-transactions                                                                       Check your outbound transactions
-wallet list pending-transactions inbound                                                               Check your pending outbound transactions
-wallet list pending-transactions outbound                                                              Check your pending inbound transactions
+wallet list inbound-transactions                                                                       Check your inbound transactions
+wallet list pending-transactions outbound                                                              Check your pending outbound transactions
 wallet list votes                                                                                      Check your votes
 wallet get balance                                                                                     Get the balance of your wallet
 wallet get                                                                                             Check your account
@@ -48,6 +47,7 @@ config clean signatures                                                         
 config clean                                                                                           Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)
 config network-symbol current                                                                          Gets current networkSymbol
 config network-symbol change                                                                           Change the protocol
+transaction list                                                                                       Get a list of all transactions on the chain by timestamp
 transaction get                                                                                        Get a transaction, accepts an id as argument. If not provided it prompts it.
 transaction create multisig-transfer                                                                   Transfers to a multisig wallet
 transaction sign multisig-transfer                                                                     Transfers to a multisig wallet
@@ -60,6 +60,10 @@ transaction post register-multisig-details                                      
 transaction post register-sig-details                                                                  Register a registerSigDetails
 transaction post register-forging-details                                                              Register a registerForgingDetails
 transaction count pending                                                                              List pending transactions
+account list outbound-transactions                                                                     Check the outbound transactions of a wallet address
+account list inbound-transactions                                                                      Check the inbound transactions of a wallet address
+account list pending-transactions outbound                                                             Check the pending outbound transactions of a wallet address
+account list votes                                                                                     Check the votes of a wallet address
 account list by-balance                                                                                List accounts
 account list multisig-wallet-members                                                                   Get wallet members
 account get balance                                                                                    Get the balance of an account
