@@ -1,15 +1,16 @@
 # ldpos-commander
 
 CLI client for LDPoS blockchains
-EXAMPLE NODE: `34.227.22.98` PORT: `7001`
 
-## Link the cli globally
+EXAMPLE NODE: `34.227.22.98` PORT: `8001`
+```
+ldpos 34.227.22.98:8001 account list by-balance
+````
 
-You will be able to use it as if it was a globally installed package
+## Installation
 
 ```js
-npm i
-npm link
+npm i -g ldpos-commander
 ```
 
 ## Commands
@@ -24,7 +25,7 @@ OR
 Usage non-interactively: ldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]
 ip:port - Default port is 7001. If not provided it will prompt you in the steps.
 eg.: ldpos 192.168.0.1 wallet get
-eg.: ldpos 192.168.0.1:7003 wallet get
+eg.: ldpos 192.168.0.1:8003 wallet get
 
 Options accepted both interactively and non-interactively:
   (option -p) PASSPHRASE
