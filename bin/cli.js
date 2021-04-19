@@ -79,7 +79,10 @@ Options accepted both interactively and non-interactively:
 
   if (
     !cli.options.exceptions
-      .map((f) => cli.argv.hasOwnProperty(f) || cli.argv._.includes(f))
+      .map(
+        (exception) =>
+          cli.argv.hasOwnProperty(exception) || cli.argv._.includes(exception)
+      )
       .includes(true)
   ) {
     if (!config.hostname) {
@@ -123,8 +126,6 @@ Options accepted both interactively and non-interactively:
         'Passphrase:',
         true
       );
-
-      delete cli.argv.p;
     } else if (!config.passphrases.hasOwnProperty('passphrase') && !readOnly) {
       // Get passphrase of the wallet
       config.passphrases.passphrase = await cli.promptInput(
@@ -148,8 +149,6 @@ Options accepted both interactively and non-interactively:
         ...config.passphrases,
         forgingPassphrase: await cli.promptInput('Forging passphrase:', true),
       };
-
-      delete cli.argv.f;
     }
 
     if (cli.argv.hasOwnProperty('m')) {
@@ -157,8 +156,6 @@ Options accepted both interactively and non-interactively:
         ...config.passphrases,
         multisigPassphrase: await cli.promptInput('Multisig passphrase:', true),
       };
-
-      delete cli.argv.m;
     }
 
     if (config.hostname === '')
