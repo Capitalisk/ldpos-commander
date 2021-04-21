@@ -454,7 +454,7 @@ Options accepted both interactively and non-interactively:
         },
       },
       generate: {
-        execute: async () => ldposAction('generateWallet', 'generated wallet:'),
+        execute: async () => cli.actions.generateWallet(),
         help: 'Generates a new wallet',
       },
     },
