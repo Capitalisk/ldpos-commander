@@ -23,7 +23,7 @@ Usage interactively: ldpos (OPTIONAL: -pmf)
 OR
 
 Usage non-interactively: ldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]
-ip:port - Default port is 7001. If not provided it will prompt you in the steps.
+ip:port - Default port is 8001. If not provided it will prompt you in the steps.
 eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:8003 wallet get
 

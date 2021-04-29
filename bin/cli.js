@@ -29,7 +29,7 @@ Usage interactively: \x1b[1mldpos (OPTIONAL: -pmf)\x1b[0m
 OR
 
 Usage non-interactively: \x1b[1mldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]\x1b[0m
-ip:port - Default port is 7001. If not provided it will prompt you in the steps.
+ip:port - Default port is 8001. If not provided it will prompt you in the steps.
 eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:7003 wallet get
 
@@ -69,7 +69,7 @@ Options accepted both interactively and non-interactively:
     cli.argv._[0].split('.').length === 4
   ) {
     const hostname = cli.argv._[0].split(':')[0];
-    const port = cli.argv._[0].split(':')[1] || 7001;
+    const port = cli.argv._[0].split(':')[1] || 8001;
 
     // Take out the IP if provided
     cli.argv._ = cli.argv._.slice(1);
@@ -107,7 +107,7 @@ Options accepted both interactively and non-interactively:
         config = {
           ...config,
           hostname: await cli.promptInput('Server IP:'),
-          port: await cli.promptInput('Port: (Default: 7001)') || 7001,
+          port: await cli.promptInput('Port: (Default: 8001)') || 8001,
         };
 
         if (config.hostname === '')
