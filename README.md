@@ -32,7 +32,7 @@ Options accepted both interactively and non-interactively:
   (option -m) MULTISIGPASSPHRASE
   (option -f) FORGINGPASSPHRASE
 
-login                                                                                                  Login with a passphrase. Intented for interactive mode only
+login                                                                                                  Login with a passphrase. Intended for interactive mode only
 exit                                                                                                   Exits the process
 v                                                                                                      No description available
 version                                                                                                No description available

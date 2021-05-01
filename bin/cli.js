@@ -221,7 +221,7 @@ Options accepted both interactively and non-interactively:
 
   const commands = {
     login: {
-      help: 'Login with a passphrase. Intented for interactive mode only',
+      help: 'Login with a passphrase. Intended for interactive mode only',
       execute: async () => {
         const passphrase = await cli.promptInput('Passphrase:', true);
 
