@@ -220,6 +220,7 @@ Options accepted both interactively and non-interactively:
   };
 
   const commands = {
+    // TODO: Allow logging in with a different forgingPassphrase and multisigPassphrase
     login: {
       help: 'Login with a passphrase. Intended for interactive mode only',
       execute: async () => {
@@ -231,6 +232,7 @@ Options accepted both interactively and non-interactively:
           await client.connect({
             passphrase,
           });
+          await client.syncAllKeyIndexes();
         } catch (e) {
           cli.errorLog(e.message);
         }
