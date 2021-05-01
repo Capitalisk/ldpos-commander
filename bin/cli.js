@@ -233,6 +233,7 @@ Options accepted both interactively and non-interactively:
             passphrase,
           });
           await client.syncAllKeyIndexes();
+          console.log('All key indexes synced.');
         } catch (e) {
           cli.errorLog(e.message);
         }
