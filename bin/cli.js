@@ -419,11 +419,9 @@ Options accepted both interactively and non-interactively:
           help: 'Check the inbound transactions of a wallet address',
         },
         pendingTransactions: {
-          outbound: {
-            execute: async () =>
-              await cli.actions.listPendingOutboundTransactions(),
-            help: 'Check the pending outbound transactions of a wallet address',
-          },
+          execute: async () =>
+            await cli.actions.listPendingOutboundTransactions(),
+          help: 'Check the pending outbound transactions of a wallet address',
         },
         votes: {
           execute: async () => await cli.actions.votes(),
