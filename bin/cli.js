@@ -6,8 +6,8 @@ const { REPLClient } = require('@maartennnn/cli-builder');
 const actions = require('../lib/actions');
 const {
   FULL_CONFIG_PATH,
-  CONFIG_PATH,
   FULL_DIRECTORY_CONFIG,
+  KEY_INDEX_DIRECTORY,
 } = require('../lib/constants');
 const {
   _checkDirectoryConfig,
@@ -43,10 +43,18 @@ Options accepted both interactively and non-interactively:
 });
 
 (async () => {
+    // Create key-index-dir
+    try {
+      await fs.mkdirp(KEY_INDEX_DIRECTORY);
+    } catch (e) {
+      cli.errorLog('Failed to create config path', 1, true);
+    }
+
   let config = {
     chainModuleName: 'capitalisk_chain',
     networkSymbol: 'clsk',
     passphrases: {},
+    storeDirPath: KEY_INDEX_DIRECTORY,
   };
   let client;
 
@@ -54,13 +62,6 @@ Options accepted both interactively and non-interactively:
     cli.argv._.join(' ').match(/(create|sign|post)/gm) ||
     cli.argv._[0] === 'wallet'
   );
-
-  // Create config path, this is used for signatures, ldpos-config.json and default path for multisig transactions
-  try {
-    await fs.mkdirp(CONFIG_PATH);
-  } catch (e) {
-    cli.errorLog('Failed to create config path', 1, true);
-  }
 
   // If command is an ip change config to that IP
   if (
@@ -289,6 +290,16 @@ Options accepted both interactively and non-interactively:
     },
     config: {
       clean: {
+        keyIndexes: {
+          execute: async () => {
+            const files = await fs.readdir(KEY_INDEX_DIRECTORY);
+            for (let i = 0; i < files.length; i++) {
+              const f = files[i];
+              await fs.remove(`${KEY_INDEX_DIRECTORY}/${f}`);
+            }
+          },
+          help: 'Cleans key indexes',
+        },
         passphrases: {
           execute: async () => {
             const config = require(FULL_CONFIG_PATH);
