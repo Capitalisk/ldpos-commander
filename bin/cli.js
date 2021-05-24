@@ -8,6 +8,7 @@ const {
   FULL_CONFIG_PATH,
   FULL_DIRECTORY_CONFIG,
   KEY_INDEX_DIRECTORY,
+  CONFIG_PATH,
 } = require('../lib/constants');
 const {
   _checkDirectoryConfig,
@@ -43,12 +44,12 @@ Options accepted both interactively and non-interactively:
 });
 
 (async () => {
-    // Create key-index-dir
-    try {
-      await fs.mkdirp(KEY_INDEX_DIRECTORY);
-    } catch (e) {
-      cli.errorLog('Failed to create config path', 1, true);
-    }
+  // Create key-index-dir
+  try {
+    await fs.mkdirp(KEY_INDEX_DIRECTORY);
+  } catch (e) {
+    cli.errorLog('Failed to create config path', 1, true);
+  }
 
   let config = {
     chainModuleName: 'capitalisk_chain',
@@ -289,6 +290,14 @@ Options accepted both interactively and non-interactively:
       },
     },
     config: {
+      show: {
+        execute: async () => {
+          cli.successLog(
+            `Config path: ${FULL_CONFIG_PATH}\nConfig directory: ${CONFIG_PATH}\nIn the config file directory you can find your signatures, key index files if not set in config and all remaining config files.`
+          );
+        },
+        help: 'Get filepaths to the configs',
+      },
       clean: {
         keyIndexes: {
           execute: async () => {
@@ -314,23 +323,20 @@ Options accepted both interactively and non-interactively:
               await fs.remove(FULL_DIRECTORY_CONFIG);
               cli.successLog('Default path removed.');
             },
-            help:
-              'Removes the default path (IMPORTANT: this action is irreversible)',
+            help: 'Removes the default path (IMPORTANT: this action is irreversible)',
           },
           execute: async () => {
             const signaturePath = await _checkDirectoryConfig(true);
             await fs.emptyDir(signaturePath);
             cli.successLog(`Signatures cleaned in ${signaturePath}`);
           },
-          help:
-            'Removes all signatures in the default path (IMPORTANT: this action is irreversible)',
+          help: 'Removes all signatures in the default path (IMPORTANT: this action is irreversible)',
         },
         execute: async () => {
           await fs.remove(FULL_CONFIG_PATH);
           cli.successLog('Config file removed.');
         },
-        help:
-          'Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)',
+        help: 'Removes config file with server ip, port and networkSymbol (IMPORTANT: this action is irreversible)',
       },
       networkSymbol: {
         current: {
@@ -358,8 +364,7 @@ Options accepted both interactively and non-interactively:
         execute: async () => await cli.actions.listTransactions(),
       },
       get: {
-        help:
-          'Get a transaction, accepts an id as argument. If not provided it prompts it.',
+        help: 'Get a transaction, accepts an id as argument. If not provided it prompts it.',
         execute: async function (id = null) {
           if (!id) id = await cli.promptInput('Transaction ID:');
           if (!id) throw new Error('No transaction id provided.');
@@ -457,8 +462,7 @@ Options accepted both interactively and non-interactively:
             cli.successLog(_integerToDecimal(balance), 'balance');
           },
         },
-        help:
-          'Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.',
+        help: 'Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.',
         execute: async function (address = null) {
           if (!address) address = await cli.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
@@ -472,8 +476,7 @@ Options accepted both interactively and non-interactively:
     },
     delegate: {
       get: {
-        help:
-          'Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.',
+        help: 'Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.',
         execute: async function (address = null) {
           if (!address) address = await this.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
