@@ -1,6 +1,6 @@
 {
   "name": "ldpos-commander",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "CLI client for LDPoS blockchains.",
   "main": "index.js",
   "scripts": {
