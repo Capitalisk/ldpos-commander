@@ -494,6 +494,13 @@ Options accepted both interactively and non-interactively:
         },
       },
     },
+    node: {
+      info: {
+        help: 'Get info about the node',
+        execute: async () =>
+          await getObject.call(cli, null, 'getNodeInfo', 'Node info'),
+      },
+    },
   };
 
   await cli.run(commands);
