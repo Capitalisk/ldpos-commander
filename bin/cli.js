@@ -501,6 +501,25 @@ Options accepted both interactively and non-interactively:
           await getObject.call(cli, null, 'getNodeInfo', 'Node info'),
       },
     },
+    block: {
+      get: {
+        maxHeight: {
+          help: 'Get the max height',
+          execute: async () =>
+            await getObject.call(cli, null, 'getMaxBlockHeight', 'Max height'),
+        },
+        help: 'Get block by id',
+        execute: async (id = null) => {
+          if (!id) id = await cli.promptInput('Block id:');
+          if (!id) throw new Error('No id provided.');
+          await getObject.call(cli, id, 'getBlock', 'Block');
+        },
+      },
+      list: {
+        help: 'List all blocks',
+        execute: async () => await cli.actions.listBlocksByTimestamp(),
+      },
+    },
   };
 
   await cli.run(commands);

@@ -42,6 +42,8 @@ wallet list pending-transactions outbound                                       
 wallet list votes                                                                                      Check your votes
 wallet get balance                                                                                     Get the balance of your wallet
 wallet get                                                                                             Check your account
+config show                                                                                            Get filepaths to the configs
+config clean key-indexes                                                                               Cleans key indexes
 config clean passphrases                                                                               Removes the passphrase
 config clean signatures default-path                                                                   Removes the default path (IMPORTANT: this action is irreversible)
 config clean signatures                                                                                Removes all signatures in the default path (IMPORTANT: this action is irreversible)
@@ -63,7 +65,7 @@ transaction post register-forging-details                                       
 transaction count pending                                                                              List pending transactions
 account list outbound-transactions                                                                     Check the outbound transactions of a wallet address
 account list inbound-transactions                                                                      Check the inbound transactions of a wallet address
-account list pending-transactions outbound                                                             Check the pending outbound transactions of a wallet address
+account list pending-transactions                                                                      Check the pending outbound transactions of a wallet address
 account list votes                                                                                     Check the votes of a wallet address
 account list by-balance                                                                                List accounts
 account list multisig-wallet-members                                                                   Get wallet members
@@ -73,4 +75,8 @@ account generate                                                                
 delegate get                                                                                           Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.
 delegate list forging-delegates                                                                        List forging deletes
 delegate list by-vote-weight                                                                           Delegates by weight in votes
+node info                                                                                              Get info about the node
+block get max-height                                                                                   Get the max height
+block get                                                                                              Get block by id
+block list                                                                                             List all blocks
 ```
