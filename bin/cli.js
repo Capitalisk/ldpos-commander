@@ -104,6 +104,21 @@ Options accepted both interactively and non-interactively:
         }
 
         config = { ...config, ...configFile };
+
+        console.log('Using config file:');
+        console.log('\tHostname:', config.hostname);
+        console.log('\tPort:', config.port);
+        console.log('\tNetwork Symbol:', config.networkSymbol);
+        console.log('\tChain module name:', config.chainModuleName);
+        console.log('');
+        console.log('Remove config by running ldpos config clean');
+        console.log('');
+        console.log(
+          'Or connect by using ldpos <ip> (it will use post 8001 by default)'
+        );
+        console.log('Or connect by using ldpos <ip>:<port>');
+        console.log('');
+        console.log('');
       } else {
         // prettier-ignore
         config = {
@@ -172,7 +187,7 @@ Options accepted both interactively and non-interactively:
       });
     } catch (e) {
       cli.errorLog(
-        "Can't connect to node\nThis can be because of a bad passphrase",
+        "Can't connect to node",
         1,
         cli.options.interactive,
         !cli.options.interactive
