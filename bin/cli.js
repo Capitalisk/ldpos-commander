@@ -125,13 +125,15 @@ Options accepted both interactively and non-interactively:
           ...config,
           hostname: await cli.promptInput('Server IP:'),
           port: await cli.promptInput('Port: (Default: 8001)') || 8001,
+          chainModuleName: await cli.promptInput('Chain Module Name: (Default: capitalisk_chain)') || 'capitalisk_chain',
+          networkSymbol: await cli.promptInput('Network Symbol: (Default: clsk)') || 'clsk',
         };
 
         if (config.hostname === '')
           return cli.errorLog('Hostname needs to be provided');
 
-        const save = ['Y', 'y'].includes(
-          await cli.promptInput(`Save in your home dir? (Y/n)`)
+        const save = ['Y', 'y', 'yes'].includes(
+          await cli.promptInput(`Save in your home dir? (y/N)`)
         );
 
         if (save) await _saveConfig(config);
