@@ -132,6 +132,8 @@ Options accepted both interactively and non-interactively:
         if (config.hostname === '')
           return cli.errorLog('Hostname needs to be provided');
 
+        console.log(config);
+
         const save = ['Y', 'y', 'yes'].includes(
           await cli.promptInput(`Save in your home dir? (y/N)`)
         );
@@ -184,6 +186,7 @@ Options accepted both interactively and non-interactively:
 
     cli.options.bindActionArgs = [client];
     try {
+      console.log('Connecting to the node...');
       await client.connect({
         ...config.passphrases,
       });
@@ -243,18 +246,45 @@ Options accepted both interactively and non-interactively:
     login: {
       help: 'Login with a passphrase. Intended for interactive mode only',
       execute: async () => {
-        const passphrase = await cli.promptInput('Passphrase:', true);
+        let passphrase;
+        let stored = false;
+        if (
+          config.passphrases.passphrase &&
+          ['Y', 'y', 'yes'].includes(
+            (await cli.promptInput('Use passphrase from config? (Y/n)')) || 'Y'
+          )
+        ) {
+          passphrase = config.passphrases.passphrase;
+          stored = true;
+        } else {
+          passphrase = await cli.promptInput('Passphrase:', true);
+        }
 
         if (!passphrase) throw new Error('No passphrase provided.');
+
+        console.log('Logging in...');
 
         try {
           await client.connect({
             passphrase,
           });
+
           await client.syncAllKeyIndexes();
           console.log('All key indexes synced.');
+
+          if (!stored) {
+            // Get passphrase of the wallet
+            config.passphrases.passphrase = passphrase;
+
+            await _storePassphrase(
+              'passphrase',
+              config,
+              cli,
+              config.passphrases.passphrase
+            );
+          }
         } catch (e) {
-          cli.errorLog(e.message);
+          cli.errorLog(e.message + '\nProbably due to an invalid passphrase.');
         }
       },
     },
