@@ -29,7 +29,7 @@
     "@maartennnn/cli-builder": "^1.1.4",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
-    "ldpos-client": "^9.3.0",
+    "ldpos-client": "^10.0.1",
     "minimist": "^1.2.5"
   },
   "bin": {

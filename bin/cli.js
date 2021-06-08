@@ -39,7 +39,7 @@ Options accepted both interactively and non-interactively:
   (option -m) MULTISIGPASSPHRASE
   (option -f) FORGINGPASSPHRASE
   `,
-  exceptions: ['clean'],
+  exceptions: ['clean', 'generate'],
   actions,
 });
 
@@ -517,7 +517,7 @@ Options accepted both interactively and non-interactively:
         },
       },
       generate: {
-        execute: async () => cli.actions.generateWallet(),
+        execute: async () => cli.actions.generate(),
         help: 'Generates a new wallet',
       },
     },
