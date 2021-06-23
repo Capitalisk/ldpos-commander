@@ -218,6 +218,7 @@ Options accepted both interactively and non-interactively:
     if (cli.argv.hasOwnProperty('p')) delete cli.argv.p;
     if (cli.argv.hasOwnProperty('m')) delete cli.argv.m;
     if (cli.argv.hasOwnProperty('f')) delete cli.argv.f;
+    if (cli.argv.hasOwnProperty('c')) delete cli.argv.c;
   }
 
   /**
