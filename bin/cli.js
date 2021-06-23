@@ -35,9 +35,10 @@ eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:7003 wallet get
 
 Options accepted both interactively and non-interactively:
+  (option -c) Start with new configurations
   (option -p) PASSPHRASE
-  (option -m) MULTISIGPASSPHRASE
-  (option -f) FORGINGPASSPHRASE
+  (option -m) MULTISIG_PASSPHRASE
+  (option -f) FORGING_PASSPHRASE
   `,
   exceptions: ['clean', 'generate'],
   actions,
@@ -79,6 +80,8 @@ Options accepted both interactively and non-interactively:
     config = { ...config, hostname, port };
   }
 
+  let newConfig = cli.argv.hasOwnProperty('c');
+
   if (
     !cli.options.exceptions
       .map(
@@ -88,7 +91,7 @@ Options accepted both interactively and non-interactively:
       .includes(true)
   ) {
     if (!config.hostname) {
-      if (await fs.pathExists(FULL_CONFIG_PATH)) {
+      if (!newConfig && await fs.pathExists(FULL_CONFIG_PATH)) {
         const configFile = require(FULL_CONFIG_PATH);
 
         // Decode passphrases
