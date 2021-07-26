@@ -114,12 +114,12 @@ Options accepted both interactively and non-interactively:
         console.log('\tNetwork Symbol:', config.networkSymbol);
         console.log('\tChain module name:', config.chainModuleName);
         console.log('');
-        console.log('Remove config by running ldpos config clean');
+        console.log('Remove config by running: ldpos config clean');
         console.log('');
         console.log(
-          'Or connect by using ldpos <ip> (it will use post 8001 by default)'
+          'Or connect by using: ldpos <ip> (it will use post 8001 by default)'
         );
-        console.log('Or connect by using ldpos <ip>:<port>');
+        console.log('Or connect by using: ldpos <ip>:<port>');
         console.log('');
         console.log('');
       } else {
@@ -403,7 +403,7 @@ Options accepted both interactively and non-interactively:
               NETWORK_SYMBOLS[0]
             );
             config.networkSymbol = networkSymbol;
-            client = ldposClient.createClient(config);
+            client = ldposClient.createClient({ config, secure: 'auto' });
           },
           help: 'Change the protocol',
         },
