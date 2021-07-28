@@ -4,7 +4,8 @@
   "description": "CLI client for LDPoS blockchains.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec --timeout 40000 --slow 40000"
+    "test": "mocha --reporter spec --timeout 40000 --slow 40000",
+    "postversion": "git push && git push --follow-tags"
   },
   "repository": {
     "type": "git",
