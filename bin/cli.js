@@ -91,7 +91,7 @@ Options accepted both interactively and non-interactively:
       .includes(true)
   ) {
     if (!config.hostname) {
-      if (!newConfig && await fs.pathExists(FULL_CONFIG_PATH)) {
+      if (!newConfig && (await fs.pathExists(FULL_CONFIG_PATH))) {
         const configFile = require(FULL_CONFIG_PATH);
 
         // Decode passphrases
@@ -416,7 +416,7 @@ Options accepted both interactively and non-interactively:
       },
       get: {
         help: 'Get a transaction, accepts an id as argument. If not provided it prompts it.',
-        execute: async function (id = null) {
+        execute: async function ({ argument: id = null }) {
           if (!id) id = await cli.promptInput('Transaction ID:');
           if (!id) throw new Error('No transaction id provided.');
           await getObject.call(this, id, 'getTransaction', 'Transaction');
@@ -506,7 +506,7 @@ Options accepted both interactively and non-interactively:
       get: {
         balance: {
           help: 'Get the balance of an account',
-          execute: async (address = null) => {
+          execute: async ({ argument: address = null }) => {
             if (!address) address = await cli.promptInput('Wallet address:');
             if (!address) throw new Error('No address provided.');
             const { balance } = await client.getAccount(address);
@@ -514,7 +514,7 @@ Options accepted both interactively and non-interactively:
           },
         },
         help: 'Get a account, accepts an address as argument if run non-interactively. If not provided it prompts it.',
-        execute: async function (address = null) {
+        execute: async function ({ argument: address = null }) {
           if (!address) address = await cli.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
           await getObject.call(cli, address, 'getAccount', 'Account');
@@ -528,7 +528,7 @@ Options accepted both interactively and non-interactively:
     delegate: {
       get: {
         help: 'Gets a delegate, accepts an address as argument if run non-interactively. If not provided it prompts it.',
-        execute: async function (address = null) {
+        execute: async function ({ argument: address = null }) {
           if (!address) address = await this.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
           await getObject.call(this, address, 'getDelegate', 'Delegate');
@@ -560,7 +560,7 @@ Options accepted both interactively and non-interactively:
             await getObject.call(cli, null, 'getMaxBlockHeight', 'Max height'),
         },
         help: 'Get block by id',
-        execute: async (id = null) => {
+        execute: async ({ argument: id = null }) => {
           if (!id) id = await cli.promptInput('Block id:');
           if (!id) throw new Error('No id provided.');
           await getObject.call(cli, id, 'getBlock', 'Block');
