@@ -567,8 +567,18 @@ Options accepted both interactively and non-interactively:
         },
       },
       list: {
-        help: 'List all blocks',
-        execute: async () => await cli.actions.listBlocksByTimestamp(),
+        all: {
+          help: 'List all blocks',
+          execute: async () => await cli.actions.listBlocksByTimestamp(),
+        },
+        byHeight: {
+          help: 'List block between specific heights',
+          execute: async () => await client.getBlocksBetweenHeights(cli.argv.f, cli.argv.l),
+          options: [
+            { option: { short: 'f', long: 'first' }, help: 'initial block' },
+            { option: { short: 'l', long: 'last' }, help: 'last block' },
+          ],
+        },
       },
     },
   };
