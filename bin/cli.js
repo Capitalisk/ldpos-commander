@@ -25,11 +25,11 @@ const cli = new REPLClient({
     '\n\x1b[1mLDPoS Commander created with CLI-Builder:\nhttps://github.com/maarteNNNN/cli-builder\x1b[0m',
   helpHeader: `This interface can be used both interactively and non-interactively:
 
-Usage interactively: \x1b[1mldpos (OPTIONAL: -pmf)\x1b[0m
+Usage interactively: \x1b[1mldpos (OPTIONAL: -cpmf) (OPTIONAL: -w walletAddress)\x1b[0m
 
 OR
 
-Usage non-interactively: \x1b[1mldpos (OPTIONAL: -pmf) (OPTIONAL: ip or ip:port) [command]\x1b[0m
+Usage non-interactively: \x1b[1mldpos (OPTIONAL: -cpmf) (OPTIONAL: -w walletAddress) (OPTIONAL: ip or ip:port) [command]\x1b[0m
 ip:port - Default port is 8001. If not provided it will prompt you in the steps.
 eg.: ldpos 192.168.0.1 wallet get
 eg.: ldpos 192.168.0.1:7003 wallet get
@@ -39,6 +39,7 @@ Options accepted both interactively and non-interactively:
   (option -p) PASSPHRASE
   (option -m) MULTISIG_PASSPHRASE
   (option -f) FORGING_PASSPHRASE
+  (option -w) WALLET_ADDRESS
   `,
   exceptions: ['clean', 'generate'],
   actions,
@@ -192,10 +193,11 @@ Options accepted both interactively and non-interactively:
       console.log('Connecting to the node...');
       await client.connect({
         ...config.passphrases,
+        walletAddress: cli.argv.w || null,
       });
     } catch (e) {
       cli.errorLog(
-        "Can't connect to node",
+        'Cannot connect to node',
         1,
         cli.options.interactive,
         !cli.options.interactive
@@ -219,6 +221,7 @@ Options accepted both interactively and non-interactively:
     if (cli.argv.hasOwnProperty('m')) delete cli.argv.m;
     if (cli.argv.hasOwnProperty('f')) delete cli.argv.f;
     if (cli.argv.hasOwnProperty('c')) delete cli.argv.c;
+    if (cli.argv.hasOwnProperty('w')) delete cli.argv.w;
   }
 
   /**
@@ -266,15 +269,23 @@ Options accepted both interactively and non-interactively:
 
         if (!passphrase) throw new Error('No passphrase provided.');
 
+        let defaultAddress = await client.computeWalletAddressFromPassphrase(passphrase);
+        let walletAddress = await cli.promptInput(`Wallet address: (Default: ${defaultAddress})`) || null;
+
         console.log('Logging in...');
 
         try {
           await client.connect({
             passphrase,
+            walletAddress
           });
 
-          await client.syncAllKeyIndexes();
-          console.log('All key indexes synced.');
+          try {
+            await client.syncAllKeyIndexes();
+            console.log('All key indexes synced.');
+          } catch (error) {
+            console.warn(`Could not sync some key indexes - ${error.message}`);
+          }
 
           if (!stored) {
             // Get passphrase of the wallet
