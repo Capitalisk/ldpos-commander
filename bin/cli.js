@@ -197,7 +197,7 @@ Options accepted both interactively and non-interactively:
       });
     } catch (e) {
       cli.errorLog(
-        'Cannot connect to node',
+        `Cannot connect to node - ${e.message}`,
         1,
         cli.options.interactive,
         !cli.options.interactive
@@ -534,6 +534,12 @@ Options accepted both interactively and non-interactively:
       generate: {
         execute: async () => cli.actions.generate(),
         help: 'Generates a new wallet',
+      },
+    },
+    passphrase: {
+      generate: {
+        execute: async () => cli.actions.generatePassphrase(),
+        help: 'Generates a new passphrase',
       },
     },
     delegate: {

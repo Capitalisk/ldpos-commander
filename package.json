@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@maartennnn/cli-builder": "^2.1.1",
+    "bip39": "^3.0.4",
     "fs-extra": "^9.0.1",
     "ldpos-client": "^10.3.0",
     "minimist": "^1.2.5"
