@@ -269,15 +269,20 @@ Options accepted both interactively and non-interactively:
 
         if (!passphrase) throw new Error('No passphrase provided.');
 
-        let defaultAddress = await client.computeWalletAddressFromPassphrase(passphrase);
-        let walletAddress = await cli.promptInput(`Wallet address: (Default: ${defaultAddress})`) || null;
+        let defaultAddress = await client.computeWalletAddressFromPassphrase(
+          passphrase
+        );
+        let walletAddress =
+          (await cli.promptInput(
+            `Wallet address: (Default: ${defaultAddress})`
+          )) || null;
 
         console.log('Logging in...');
 
         try {
           await client.connect({
             passphrase,
-            walletAddress
+            walletAddress,
           });
 
           try {
@@ -588,6 +593,7 @@ Options accepted both interactively and non-interactively:
         execute: async () => await cli.actions.listBlocksByTimestamp(),
       },
     },
+    fees: async () => await getObject.call(cli, null, 'getMinFees', 'Fees'),
   };
 
   await cli.run(commands);
