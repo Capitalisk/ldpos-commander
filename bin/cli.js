@@ -235,6 +235,23 @@ Options accepted both interactively and non-interactively:
     if (data.balance) data.balance = _integerToDecimal(data.balance);
     if (data.amount) data.amount = _integerToDecimal(data.amount);
     if (data.fee) data.fee = _integerToDecimal(data.fee);
+    if (data.minTransactionFees) {
+      const keys = Object.keys(data.minTransactionFees);
+
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
+        data.minTransactionFees[k] = _integerToDecimal(
+          data.minTransactionFees[k]
+        );
+      }
+
+      data.minMultisigRegistrationFeePerMember = _integerToDecimal(
+        data.minMultisigRegistrationFeePerMember
+      );
+      data.minMultisigTransactionFeePerMember = _integerToDecimal(
+        data.minMultisigTransactionFeePerMember
+      );
+    }
 
     this.successLog(data, `${title}`);
   };
