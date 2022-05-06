@@ -610,7 +610,11 @@ Options accepted both interactively and non-interactively:
         execute: async () => await cli.actions.listBlocksByTimestamp(),
       },
     },
-    fees: async () => await getObject.call(cli, null, 'getMinFees', 'Fees'),
+    fees: {
+      help: 'List fees',
+      execute: async () =>
+        await getObject.call(cli, null, 'getMinFees', 'Fees'),
+    },
   };
 
   await cli.run(commands);
