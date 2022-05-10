@@ -584,7 +584,7 @@ Options accepted both interactively and non-interactively:
         },
       },
       forging: {
-        execute: async ({ argument: address = null }) => {
+        execute: async function ({ argument: address = null }) {
           if (!address) address = await this.promptInput('Wallet address:');
           if (!address) throw new Error('No address provided.');
           await cli.actions.delegateForging(address);
