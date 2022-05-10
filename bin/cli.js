@@ -583,6 +583,14 @@ Options accepted both interactively and non-interactively:
           help: 'Delegates by weight in votes',
         },
       },
+      forging: {
+        execute: async ({ argument: address = null }) => {
+          if (!address) address = await this.promptInput('Wallet address:');
+          if (!address) throw new Error('No address provided.');
+          await cli.actions.delegateForging(address);
+        },
+        help: 'Check if delegate is forging',
+      },
     },
     node: {
       info: {
