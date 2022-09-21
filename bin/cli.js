@@ -554,7 +554,8 @@ Options accepted both interactively and non-interactively:
         },
       },
       generate: {
-        execute: async () => cli.actions.generate(),
+        execute: async ({ argument: networkSymbol }) =>
+          cli.actions.generate(networkSymbol),
         help: 'Generates a new wallet',
       },
     },
