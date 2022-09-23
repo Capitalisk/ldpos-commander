@@ -624,6 +624,124 @@ Options accepted both interactively and non-interactively:
       execute: async () =>
         await getObject.call(cli, null, 'getMinFees', 'Fees'),
     },
+    genesis: {
+      generate: {
+        help: 'Generate a genesis json',
+        execute: async ({ argument: networkSymbol = null }) => {
+          const genesis = [];
+          const passphrases = [];
+
+          const getRequiredInfo = async (address = null) => {
+            const balance = await cli.promptInput('Balance:');
+
+            const votes = [];
+
+            if (genesis.length === 0) {
+              votes.push(address);
+            }
+
+            if (
+              genesis.length !== 0 &&
+              (await cli.promptConfirm('Given address votes for itself? [Y/n]'))
+            ) {
+              votes.push(address);
+            }
+
+            console.log(votes.length, genesis.length);
+
+            while (
+              genesis.length !== 0 &&
+              votes.length !== genesis.length + 1 &&
+              (await cli.promptConfirm('Want to add more votes? [Y/n]'))
+            ) {
+              const choices = genesis
+                .map((g) => g.address)
+                .filter((g) => !votes.includes(g));
+              votes.push(await cli.promptList('Votes:', choices));
+
+              console.log(votes.length, genesis.length);
+            }
+
+            return Promise.resolve({
+              balance,
+              votes,
+            });
+          };
+
+          const getGenesisDetails = async () => {
+            const generateAccount = await cli.promptConfirm(
+              'Generate account? [Y/n]'
+            );
+
+            const nextForgingKeyIndex = 0;
+            const nextMultisigKeyIndex = 0;
+            const nextSigKeyIndex = 0;
+
+            if (generateAccount) {
+              if (!networkSymbol) {
+                networkSymbol = await cli.promptInput('Network symbol:');
+              }
+
+              const account = await cli.actions.generate(
+                networkSymbol,
+                true,
+                true
+              );
+
+              passphrases.push(account);
+
+              delete account.passphrase;
+
+              const requiredInfo = await getRequiredInfo(account.address);
+
+              return Promise.resolve({
+                ...account,
+                ...requiredInfo,
+                type: 'sig',
+                nextForgingKeyIndex,
+                nextMultisigKeyIndex,
+                nextSigKeyIndex,
+              });
+            } else {
+              const address = await cli.promptInput('Address:');
+              const type =
+                (await cli.promptInput('Wallet type: (Default: sig)')) || 'sig';
+
+              const forgingPublicKey = await cli.promptInput(
+                'Forging public key:'
+              );
+              const multisigPublicKey = await cli.promptInput(
+                'Multisig public key:'
+              );
+              const sigPublicKey = await cli.promptInput('Sig public key:');
+
+              const requiredInfo = await getRequiredInfo(address);
+
+              return Promise.resolve({
+                ...requiredInfo,
+                address,
+                type,
+                forgingPublicKey,
+                nextForgingKeyIndex,
+                multisigPublicKey,
+                nextMultisigKeyIndex,
+                sigPublicKey,
+                nextSigKeyIndex,
+              });
+            }
+          };
+
+          genesis.push(await getGenesisDetails());
+
+          while (await cli.promptConfirm('Want to add more addresses?')) {
+            genesis.push(await getGenesisDetails());
+          }
+
+          console.log(genesis);
+          console.log(passphrases);
+        },
+      },
+    },
   };
 
   await cli.run(commands);
