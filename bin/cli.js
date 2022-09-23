@@ -647,8 +647,6 @@ Options accepted both interactively and non-interactively:
               votes.push(address);
             }
 
-            console.log(votes.length, genesis.length);
-
             while (
               genesis.length !== 0 &&
               votes.length !== genesis.length + 1 &&
@@ -658,8 +656,6 @@ Options accepted both interactively and non-interactively:
                 .map((g) => g.address)
                 .filter((g) => !votes.includes(g));
               votes.push(await cli.promptList('Votes:', choices));
-
-              console.log(votes.length, genesis.length);
             }
 
             return Promise.resolve({
@@ -688,7 +684,7 @@ Options accepted both interactively and non-interactively:
                 true
               );
 
-              passphrases.push(account);
+              passphrases.push({ ...account });
 
               delete account.passphrase;
 
@@ -737,8 +733,28 @@ Options accepted both interactively and non-interactively:
             genesis.push(await getGenesisDetails());
           }
 
+          if (await cli.promptConfirm('Want to write to file? [Y/n]')) {
+            const filePath =
+              (await cli.promptInput(
+                `Path write genesis file to genesis.json? (Default: ${__dirname})`
+              )) || __dirname;
+
+            if (filePath) {
+              await fs.promises.writeFile(
+                `${filePath}/genesis.json`,
+                JSON.stringify(genesis, null, 2),
+                {
+                  encoding: 'utf8',
+                }
+              );
+
+              if (passphrases.length) console.log(passphrases);
+              return;
+            }
+          }
+
           console.log(genesis);
-          console.log(passphrases);
+          if (passphrases.length) console.log(passphrases);
         },
       },
     },
