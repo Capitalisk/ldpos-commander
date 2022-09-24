@@ -632,7 +632,9 @@ Options accepted both interactively and non-interactively:
           const passphrases = [];
 
           const getRequiredInfo = async (address = null) => {
-            const balance = await cli.promptInput('Balance:');
+            const balance = _decimalToInteger(
+              await cli.promptInput('Balance:')
+            );
 
             const votes = [];
 
