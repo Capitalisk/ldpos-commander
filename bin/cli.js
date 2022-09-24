@@ -15,6 +15,7 @@ const {
   _storePassphrase,
   _saveConfig,
   _integerToDecimal,
+  _decimalToInteger,
 } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
@@ -628,12 +629,16 @@ Options accepted both interactively and non-interactively:
       generate: {
         help: 'Generate a genesis json',
         execute: async ({ argument: networkSymbol = null }) => {
+          console.log(
+            '\n\n\x1b[31m IMPORTANT \x1b[0m \nAdd accounts by voting sequence, the account that receives the biggest amount of votes should be the last.\n\n'
+          );
+
           const genesis = [];
           const passphrases = [];
 
           const getRequiredInfo = async (address = null) => {
             const balance = _decimalToInteger(
-              await cli.promptInput('Balance:')
+              (await cli.promptInput('Balance: (Default: 0)')) || '0'
             );
 
             const votes = [];
