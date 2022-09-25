@@ -15,6 +15,7 @@ const {
   _storePassphrase,
   _saveConfig,
   _integerToDecimal,
+  _decimalToInteger,
 } = require('../lib/utils');
 
 const NETWORK_SYMBOLS = ['clsk'];
@@ -623,6 +624,146 @@ Options accepted both interactively and non-interactively:
       help: 'List fees',
       execute: async () =>
         await getObject.call(cli, null, 'getMinFees', 'Fees'),
+    },
+    genesis: {
+      generate: {
+        help: 'Generate a genesis json',
+        execute: async ({ argument: networkSymbol = null }) => {
+          console.log(
+            '\n\n\x1b[31m IMPORTANT \x1b[0m \nAdd accounts by voting sequence, the account that receives the biggest amount of votes should be the last.\n\n'
+          );
+
+          const genesis = [];
+          const passphrases = [];
+
+          const getRequiredInfo = async (address = null) => {
+            const balance = _decimalToInteger(
+              (await cli.promptInput('Balance: (Default: 0)')) || '0'
+            );
+
+            const votes = [];
+
+            if (genesis.length === 0) {
+              votes.push(address);
+            }
+
+            if (
+              genesis.length !== 0 &&
+              (await cli.promptConfirm('Given address votes for itself? [Y/n]'))
+            ) {
+              votes.push(address);
+            }
+
+            while (
+              genesis.length !== 0 &&
+              votes.length !== genesis.length + 1 &&
+              (await cli.promptConfirm('Want to add more votes? [Y/n]'))
+            ) {
+              const choices = genesis
+                .map((g) => g.address)
+                .filter((g) => !votes.includes(g));
+              votes.push(await cli.promptList('Votes:', choices));
+            }
+
+            return Promise.resolve({
+              balance,
+              votes,
+            });
+          };
+
+          const getGenesisDetails = async () => {
+            const generateAccount = await cli.promptConfirm(
+              'Generate account? [Y/n]'
+            );
+
+            const nextForgingKeyIndex = 0;
+            const nextMultisigKeyIndex = 0;
+            const nextSigKeyIndex = 0;
+
+            if (generateAccount) {
+              if (!networkSymbol) {
+                networkSymbol = await cli.promptInput('Network symbol:');
+              }
+
+              const account = await cli.actions.generate(
+                networkSymbol,
+                true,
+                true
+              );
+
+              passphrases.push({ ...account });
+
+              delete account.passphrase;
+
+              const requiredInfo = await getRequiredInfo(account.address);
+
+              return Promise.resolve({
+                ...account,
+                ...requiredInfo,
+                type: 'sig',
+                nextForgingKeyIndex,
+                nextMultisigKeyIndex,
+                nextSigKeyIndex,
+              });
+            } else {
+              const address = await cli.promptInput('Address:');
+              const type =
+                (await cli.promptInput('Wallet type: (Default: sig)')) || 'sig';
+
+              const forgingPublicKey = await cli.promptInput(
+                'Forging public key:'
+              );
+              const multisigPublicKey = await cli.promptInput(
+                'Multisig public key:'
+              );
+              const sigPublicKey = await cli.promptInput('Sig public key:');
+
+              const requiredInfo = await getRequiredInfo(address);
+
+              return Promise.resolve({
+                ...requiredInfo,
+                address,
+                type,
+                forgingPublicKey,
+                nextForgingKeyIndex,
+                multisigPublicKey,
+                nextMultisigKeyIndex,
+                sigPublicKey,
+                nextSigKeyIndex,
+              });
+            }
+          };
+
+          genesis.push(await getGenesisDetails());
+
+          while (await cli.promptConfirm('Want to add more addresses?')) {
+            genesis.push(await getGenesisDetails());
+          }
+
+          if (await cli.promptConfirm('Want to write to file? [Y/n]')) {
+            const filePath =
+              (await cli.promptInput(
+                `Path write genesis file to genesis.json? (Default: ${__dirname})`
+              )) || __dirname;
+
+            if (filePath) {
+              await fs.promises.writeFile(
+                `${filePath}/genesis.json`,
+                JSON.stringify(genesis, null, 2),
+                {
+                  encoding: 'utf8',
+                }
+              );
+
+              if (passphrases.length) console.log(passphrases);
+              return;
+            }
+          }
+
+          console.log(genesis);
+          if (passphrases.length) console.log(passphrases);
+        },
+      },
     },
   };
 
