@@ -1,6 +1,6 @@
 {
   "name": "@capitalisk/ldpos-commander",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "CLI client for LDPoS blockchains.",
   "main": "index.js",
   "scripts": {
