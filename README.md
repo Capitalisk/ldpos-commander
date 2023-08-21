@@ -33,7 +33,7 @@ Options accepted both interactively and non-interactively:
   (option -m) MULTISIG_PASSPHRASE
   (option -f) FORGING_PASSPHRASE
   (option -w) WALLET_ADDRESS
-  
+
 login                                                          Login with a passphrase. Intended for interactive mode only
 exit                                                           Exits the process
 v                                                              No description available
@@ -54,12 +54,12 @@ config network-symbol current                                  Gets current netw
 config network-symbol change                                   Change the protocol
 transaction list                                               Get a list of all transactions on the chain by timestamp
 transaction get                                                Get a transaction, accepts an id as argument. If not provided it prompts it.
-transaction create multisig-transfer                           Transfers to a multisig wallet
-transaction sign multisig-transfer                             Transfers to a multisig wallet
+transaction create multisig-transfer                           Transfers from a multisig wallet
+transaction sign multisig-transfer                             Transfers from a multisig wallet
 transaction post transfer                                      Transfer to a wallet
 transaction post vote                                          Vote a delegate
 transaction post unvote                                        Unvote a delegate
-transaction post multisig-transaction                          Transfers to a multisig wallet
+transaction post multisig-transaction                          Transfers from a multisig wallet
 transaction post register-multisig-wallet                      Register a multisigwallet
 transaction post register-multisig-details                     Register a registerMultisigDetails
 transaction post register-sig-details                          Register a registerSigDetails

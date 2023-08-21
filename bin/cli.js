@@ -459,13 +459,13 @@ Options accepted both interactively and non-interactively:
       create: {
         multisigTransfer: {
           execute: async () => await cli.actions.createMultisigTransfer(),
-          help: 'Transfers to a multisig wallet',
+          help: 'Transfers from a multisig wallet',
         },
       },
       sign: {
         multisigTransfer: {
           execute: async () => await cli.actions.signMultisigTransfer(),
-          help: 'Transfers to a multisig wallet',
+          help: 'Sign a multisig wallet transaction',
         },
       },
       post: {
@@ -483,7 +483,7 @@ Options accepted both interactively and non-interactively:
         },
         multisigTransaction: {
           execute: async () => await cli.actions.postMultisigTransaction(),
-          help: 'Transfers to a multisig wallet',
+          help: 'Transfers from a multisig wallet',
         },
         registerMultisigWallet: {
           execute: async () => await cli.actions.registerMultisigWallet(),
