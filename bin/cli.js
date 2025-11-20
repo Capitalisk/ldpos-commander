@@ -601,7 +601,7 @@ Options accepted both interactively and non-interactively:
           await getObject.call(cli, null, 'getNodeInfo', 'Node info'),
       },
     },
-    peers: {
+    peer: {
       list: {
         help: 'Get list of peers',
         execute: async () =>
