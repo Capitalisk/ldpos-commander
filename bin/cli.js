@@ -601,6 +601,13 @@ Options accepted both interactively and non-interactively:
           await getObject.call(cli, null, 'getNodeInfo', 'Node info'),
       },
     },
+    peers: {
+      list: {
+        help: 'Get list of peers',
+        execute: async () =>
+          await getObject.call(cli, null, 'getPeers', 'Peers'),
+      },
+    },
     block: {
       get: {
         maxHeight: {
