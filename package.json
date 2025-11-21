@@ -30,7 +30,7 @@
     "@maartennnn/cli-builder": "^2.3.0",
     "bip39": "^3.0.4",
     "fs-extra": "^9.0.1",
-    "ldpos-client": "^10.3.0",
+    "ldpos-client": "^12.2.4",
     "minimist": "^1.2.5"
   },
   "bin": {
